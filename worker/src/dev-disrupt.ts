@@ -134,7 +134,33 @@ export async function findAffected(env: Env): Promise<AffectedRow[]> {
   return results ?? [];
 }
 
-export async function disrupt(env: Env, now: Date): Promise<Response> {
+/**
+ * Fire the disruption AND start the work.
+ *
+ * The gate is on the DIAL, not just on the Sabre write. HACKATHON_CONTEXT.md:115
+ * — "the agent acts alone inside policy and escalates above it" — is only true
+ * on screen if an in-policy impact starts calling by itself. Requiring a curl
+ * between "flight cancelled" and "agent working" undercuts the whole claim.
+ *
+ * So after the offers land:
+ *   top offer PASS + number allowlisted  -> enqueue a REAL call
+ *   top offer PASS + not allowlisted     -> hand to the replay driver
+ *   top offer NEEDS_APPROVAL or FAIL     -> park, dial nothing
+ *
+ * The allowlist split is not a workaround, it is the safety property: seed.sql
+ * ships 16 Korean numbers in a non-reserved range, so "dial everyone whose
+ * option is in policy" would phone strangers. Only genuinely dialable numbers
+ * ring; the rest animate from captured frames.
+ */
+export async function disrupt(
+  env: Env,
+  now: Date,
+  ctx?: ExecutionContext | null,
+  // Default OFF: the test suite calls disrupt() dozens of times, and a default
+  // of true would kick a ~74s replay timeline on every one of them. The route
+  // opts in; unit tests get the pure write.
+  autoDispatch = false,
+): Promise<Response> {
   const detectedAt = now.toISOString();
   const affected = await findAffected(env);
 
@@ -222,7 +248,42 @@ export async function disrupt(env: Env, now: Date): Promise<Response> {
 
   await env.DB.batch(statements);
 
+  // ---- start the work ------------------------------------------------------
+  const dispatched: { employee: string; via: "call" | "replay" | "parked" }[] = [];
+  if (autoDispatch) {
+    const allowed = new Set(
+      (env.DIAL_ALLOWLIST ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+    );
+    const topVerdict = OFFERS.reduce((a, b) => (a.rank <= b.rank ? a : b)).verdict;
+
+    if (topVerdict === "PASS") {
+      for (const row of affected) {
+        const phone = await env.DB.prepare(`SELECT phone_e164 AS p FROM employee WHERE id = ?`)
+          .bind(row.employee_id)
+          .first<{ p: string | null }>();
+
+        if (phone?.p && allowed.has(phone.p)) {
+          // A number we are actually permitted to ring.
+          await enqueueRealCall(env, row.employee_id, impactIdFor(row.employee_id), phone.p, now);
+          dispatched.push({ employee: row.employee_id, via: "call" });
+        } else {
+          dispatched.push({ employee: row.employee_id, via: "replay" });
+        }
+      }
+
+      // Everyone not dialled is animated from captured frames. Fired after the
+      // real call is queued so the live one leads.
+      const { replay } = await import("./dev-replay");
+      if (dispatched.some((d) => d.via === "replay")) {
+        await replay(env, ctx ?? null, {});
+      }
+    } else {
+      for (const row of affected) dispatched.push({ employee: row.employee_id, via: "parked" });
+    }
+  }
+
   return Response.json({
+    dispatched,
     ok: true,
     event_id: EVENT_ID,
     flight: `${SCENARIO.carrier}${SCENARIO.flightNo}`,
@@ -282,6 +343,59 @@ export async function reset(env: Env): Promise<Response> {
   ]);
 
   return Response.json({ ok: true, reset: EVENT_ID });
+}
+
+/**
+ * Queue one real outbound call and bind the slot BEFORE it rings.
+ *
+ * The binding is not bookkeeping: VocalBridge has no per-call context channel,
+ * so the agent learns who it called by resolving agent_slot server-side. Dial
+ * first and the agent greets nobody in particular.
+ */
+async function enqueueRealCall(
+  env: Env,
+  employeeId: string,
+  impactId: string,
+  phone: string,
+  now: Date,
+) {
+  const slot = "slot-a";
+  const dispatchId = `dsp-${impactId}-${slot}`;
+  const iso = now.toISOString();
+
+  await env.DB.batch([
+    env.DB.prepare(
+      `INSERT INTO dispatch
+         (id, kind, impact_id, employee_id, slot, directive, idempotency_key,
+          actor_kind, status, created_at)
+       VALUES (?, 'CALL_EMPLOYEE', ?, ?, ?, ?, ?, 'AGENT', 'QUEUED', ?)
+       ON CONFLICT(id) DO NOTHING`,
+    ).bind(
+      dispatchId,
+      impactId,
+      employeeId,
+      slot,
+      "Flight cancelled — read the priced options and capture a choice.",
+      `call:${impactId}:${slot}`,
+      iso,
+    ),
+    env.DB.prepare(
+      `UPDATE agent_slot SET status='BOUND', dispatch_id=?, bound_at=?, lease_expires_at=?
+        WHERE slot=?`,
+    ).bind(dispatchId, iso, new Date(now.getTime() + 30 * 60_000).toISOString(), slot),
+    env.DB.prepare(
+      `UPDATE disruption_impact
+          SET previous_state=state, state='CONTACTING', state_changed_at=?
+        WHERE id=? AND state='TRIAGING'`,
+    ).bind(iso, impactId),
+  ]);
+
+  await env.DISPATCH_Q.send({
+    dispatchId,
+    employeeId,
+    phone,
+    directive: "Flight cancelled — read the priced options.",
+  });
 }
 
 export function impactIdFor(employeeId: string): string {

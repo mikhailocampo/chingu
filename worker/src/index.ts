@@ -440,7 +440,7 @@ export default {
         return new Response("dev routes disabled", { status: 404 });
       }
       if (url.pathname === "/api/dev/disrupt" && req.method === "POST") {
-        return disrupt(env, new Date());
+        return disrupt(env, new Date(), ctx, true);
       }
       if (url.pathname === "/api/dev/call" && req.method === "POST") {
         return placeCall(env, await req.json().catch(() => ({})), new Date());

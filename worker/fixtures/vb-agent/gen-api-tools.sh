@@ -13,9 +13,21 @@
 # and the agents recreating each time. With a named tunnel or a deployed
 # worker you run this once.
 #
-# NOTE the auth shape: the token lives at `auth.credentials.token`, NOT at
-# `auth.type` alone. The recovered schema in VOCALBRIDGE_LEARNINGS.md:17 lists
-# only `auth:{type}` and is incomplete on this point.
+# TWO undocumented traps, both found the hard way on a live call:
+#
+# 1. The token lives at `auth.credentials.token`, NOT at `auth.type` alone.
+#    The recovered schema in VOCALBRIDGE_LEARNINGS.md:17 lists only
+#    `auth:{type}` and is incomplete.
+#
+# 2. **VB's api_tools parser is FIELD-ORDER SENSITIVE.** Ordering the keys
+#    `id, name, description, method, url, auth, parameters` caused the stored
+#    `auth.credentials.token` to be silently overwritten with the DESCRIPTION
+#    text, so every tool call went out as
+#    `Authorization: Bearer Find out who you are speaking to...` and 401'd.
+#    It also rewrote `method: POST` to `GET`. Nothing errors — `vb config set`
+#    reports success and the config looks fine until a real call fails.
+#    Emitting `url` and `method` BEFORE `auth` stores it correctly. Always
+#    read the config back and assert the token length after setting it.
 set -euo pipefail
 
 HOST="${1:-}"
