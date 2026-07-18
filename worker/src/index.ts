@@ -12,6 +12,8 @@
  */
 import { DurableObject } from "cloudflare:workers";
 import { assertDialable, NotAllowlisted } from "./allowlist";
+import { disrupt, reset } from "./dev-disrupt";
+import { getRoster } from "./roster";
 
 export interface Env {
   INGEST: DurableObjectNamespace<IngestDO>;
@@ -22,6 +24,8 @@ export interface Env {
   VB_AGENT_ID: string;
   /** Comma-separated E.164 numbers we are permitted to dial. See allowlist.ts. */
   DIAL_ALLOWLIST?: string;
+  /** "true" enables /api/dev/*. Never set in production. */
+  ENABLE_DEV_ROUTES?: string;
 }
 
 interface DispatchJob {
@@ -346,6 +350,26 @@ export class IngestDO extends DurableObject<Env> {
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
+
+    // Dashboard read. Employee-spined, all 26 — /api/dispatches cannot render
+    // this because a GREEN employee has no dispatch row.
+    if (url.pathname === "/api/roster" && req.method === "GET") {
+      const eventId = url.searchParams.get("event_id") ?? "evt-busan";
+      return getRoster(env, eventId);
+    }
+
+    // Demo seams. Gated: a test seam that ships is how demos get embarrassing.
+    if (url.pathname.startsWith("/api/dev/")) {
+      if (env.ENABLE_DEV_ROUTES !== "true") {
+        return new Response("dev routes disabled", { status: 404 });
+      }
+      if (url.pathname === "/api/dev/disrupt" && req.method === "POST") {
+        return disrupt(env, new Date());
+      }
+      if (url.pathname === "/api/dev/reset" && req.method === "POST") {
+        return reset(env);
+      }
+    }
 
     // Agent screen: live event stream for one dispatch.
     if (url.pathname.startsWith("/api/dispatch/") && url.pathname.endsWith("/stream")) {
