@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Avatar } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { StatusPill } from "@/components/roster/status-pill"
 import { formatMoney } from "@/lib/format"
@@ -37,6 +38,7 @@ export function DetailDrawer({
           <>
             <DialogHeader>
               <div className="flex flex-wrap items-center gap-2.5">
+                <Avatar name={card.name} seed={card.employeeId} size={40} />
                 <DialogTitle className="font-heading text-[19px] font-semibold">
                   {card.name}
                 </DialogTitle>

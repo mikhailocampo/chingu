@@ -308,37 +308,54 @@ export async function disrupt(
 }
 
 /** Wipe everything this seam created. Returns the board to seed state. */
+/**
+ * Wipe everything this seam created. Returns the board to seed state.
+ *
+ * ORDER IS LOAD-BEARING — children before parents. The schema has
+ * action.approval_id and dispatch.approval_id both REFERENCING approval(id)
+ * (schema.sql:270, :298), and call_log.dispatch_id REFERENCING dispatch(id)
+ * (:317). Deleting approvals first throws
+ * "FOREIGN KEY constraint failed" and the whole reset rolls back.
+ *
+ * That stayed hidden until the approve path started producing actions that
+ * carry an approval_id — before that, nothing referenced an approval, so the
+ * wrong order looked fine.
+ */
 export async function reset(env: Env): Promise<Response> {
+  const impacts = `SELECT id FROM disruption_impact WHERE event_id = ?`;
+
   await env.DB.batch([
+    // 1. call_log -> dispatch
     env.DB.prepare(
-      `DELETE FROM approval WHERE impact_id IN
-         (SELECT id FROM disruption_impact WHERE event_id = ?)`,
+      `DELETE FROM call_log WHERE dispatch_id IN
+         (SELECT id FROM dispatch WHERE impact_id IN (${impacts}))`,
     ).bind(EVENT_ID),
+
+    // 2. action -> dispatch, approval. Match on any of the three routes an
+    //    action can be tied to this event, not just subject_id.
     env.DB.prepare(
-      `DELETE FROM action WHERE subject_type = 'impact' AND subject_id IN
-         (SELECT id FROM disruption_impact WHERE event_id = ?)`,
-    ).bind(EVENT_ID),
-    env.DB.prepare(
-      `DELETE FROM offer WHERE impact_id IN
-         (SELECT id FROM disruption_impact WHERE event_id = ?)`,
-    ).bind(EVENT_ID),
-    env.DB.prepare(
-      `DELETE FROM dispatch WHERE impact_id IN
-         (SELECT id FROM disruption_impact WHERE event_id = ?)`,
-    ).bind(EVENT_ID),
+      `DELETE FROM action
+        WHERE (subject_type = 'impact' AND subject_id IN (${impacts}))
+           OR dispatch_id IN (SELECT id FROM dispatch WHERE impact_id IN (${impacts}))
+           OR approval_id IN (SELECT id FROM approval WHERE impact_id IN (${impacts}))`,
+    ).bind(EVENT_ID, EVENT_ID, EVENT_ID),
+
+    // 3. dispatch -> approval, agent_slot
+    env.DB.prepare(`DELETE FROM dispatch WHERE impact_id IN (${impacts})`).bind(EVENT_ID),
+
+    // 4. approval -> offer
+    env.DB.prepare(`DELETE FROM approval WHERE impact_id IN (${impacts})`).bind(EVENT_ID),
+
+    // 5. offer -> impact
+    env.DB.prepare(`DELETE FROM offer WHERE impact_id IN (${impacts})`).bind(EVENT_ID),
+
     env.DB.prepare(`DELETE FROM disruption_impact WHERE event_id = ?`).bind(EVENT_ID),
     env.DB.prepare(`DELETE FROM disruption_event WHERE id = ?`).bind(EVENT_ID),
 
-    // Free any slot bound to a dispatch we just deleted.
-    //
-    // Without this, reset leaves a DANGLING BINDING: agent_slot still points at
-    // a dispatch row that no longer exists, so the next get_brief resolves to a
-    // ghost. agent_slot is authoritative for resolution (schema.sql:244), so a
-    // stale row there is not cosmetic — it is the agent being told to talk to
-    // someone who isn't there.
-    //
-    // status and lease move together: the CHECK at schema.sql:253 only permits
-    // a NULL lease when the slot is FREE.
+    // Free any slot bound to a dispatch we just deleted. agent_slot is
+    // authoritative for resolution (schema.sql:244), so a stale row there means
+    // the next get_brief resolves to a ghost. status and lease move together —
+    // the CHECK at :253 only permits a NULL lease when FREE.
     env.DB.prepare(
       `UPDATE agent_slot
           SET status = 'FREE', dispatch_id = NULL, bound_at = NULL, lease_expires_at = NULL
@@ -348,59 +365,6 @@ export async function reset(env: Env): Promise<Response> {
   ]);
 
   return Response.json({ ok: true, reset: EVENT_ID });
-}
-
-/**
- * Queue one real outbound call and bind the slot BEFORE it rings.
- *
- * The binding is not bookkeeping: VocalBridge has no per-call context channel,
- * so the agent learns who it called by resolving agent_slot server-side. Dial
- * first and the agent greets nobody in particular.
- */
-async function enqueueRealCall(
-  env: Env,
-  employeeId: string,
-  impactId: string,
-  phone: string,
-  now: Date,
-) {
-  const slot = "slot-a";
-  const dispatchId = `dsp-${impactId}-${slot}`;
-  const iso = now.toISOString();
-
-  await env.DB.batch([
-    env.DB.prepare(
-      `INSERT INTO dispatch
-         (id, kind, impact_id, employee_id, slot, directive, idempotency_key,
-          actor_kind, status, created_at)
-       VALUES (?, 'CALL_EMPLOYEE', ?, ?, ?, ?, ?, 'AGENT', 'QUEUED', ?)
-       ON CONFLICT(id) DO NOTHING`,
-    ).bind(
-      dispatchId,
-      impactId,
-      employeeId,
-      slot,
-      "Flight cancelled — read the priced options and capture a choice.",
-      `call:${impactId}:${slot}`,
-      iso,
-    ),
-    env.DB.prepare(
-      `UPDATE agent_slot SET status='BOUND', dispatch_id=?, bound_at=?, lease_expires_at=?
-        WHERE slot=?`,
-    ).bind(dispatchId, iso, new Date(now.getTime() + 30 * 60_000).toISOString(), slot),
-    env.DB.prepare(
-      `UPDATE disruption_impact
-          SET previous_state=state, state='CONTACTING', state_changed_at=?
-        WHERE id=? AND state='TRIAGING'`,
-    ).bind(iso, impactId),
-  ]);
-
-  await env.DISPATCH_Q.send({
-    dispatchId,
-    employeeId,
-    phone,
-    directive: "Flight cancelled — read the priced options.",
-  });
 }
 
 export function impactIdFor(employeeId: string): string {

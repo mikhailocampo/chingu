@@ -13,6 +13,7 @@
 import { ChevronRight } from "lucide-react"
 import { useState } from "react"
 
+import { Avatar } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { StatusPill } from "@/components/roster/status-pill"
 import { formatMoney } from "@/lib/format"
@@ -61,6 +62,7 @@ export function RosterCardItem({
       <div className="flex flex-col gap-3.5 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+            <Avatar name={card.name} seed={card.employeeId} size={28} />
             <h3 className="font-heading text-[17px] font-semibold">{card.name}</h3>
             <StatusPill status={card.status} />
             {card.homeBase && (

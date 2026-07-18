@@ -14,11 +14,12 @@ import { useMemo, useState } from "react"
 import { BandHeader } from "@/components/roster/band-header"
 import { DetailDrawer } from "@/components/roster/detail-drawer"
 import { MicDock } from "@/components/mic-dock"
-import { QuietTable } from "@/components/roster/quiet-table"
+import { QuietGrid } from "@/components/roster/quiet-grid"
 import { RosterCardItem } from "@/components/roster/roster-card"
 import { RosterSkeleton } from "@/components/roster/skeletons"
 import { SummaryStrip, type RosterFilter } from "@/components/roster/summary-strip"
 import { Button } from "@/components/ui/button"
+import { Favicon } from "@/components/ui/favicon"
 import { useRoster, useTicker } from "@/hooks/use-roster"
 import { approve as approveApi } from "@/lib/api"
 import { clockTime, relativeTime } from "@/lib/format"
@@ -61,12 +62,15 @@ export function RosterPage() {
   return (
     <div className="mx-auto max-w-[1180px] px-5 pt-6 pb-32 sm:px-6">
       <header className="border-border flex flex-wrap items-baseline justify-between gap-4 border-b pb-4">
-        <div>
-          <h1 className="font-heading text-xl font-bold tracking-[-0.01em]">Employees</h1>
-          <p className="text-muted-foreground mt-0.5 text-[13px]">
-            Samsung Global Offsite · Busan ·{" "}
-            <b className="text-foreground font-medium">15–18 Sep 2026</b>
-          </p>
+        <div className="flex items-center gap-3">
+          <Favicon domain="samsung.com" size={28} alt="Samsung" />
+          <div>
+            <h1 className="font-heading text-xl font-bold tracking-[-0.01em]">Employees</h1>
+            <p className="text-muted-foreground mt-0.5 text-[13px]">
+              Samsung Global Offsite · Busan ·{" "}
+              <b className="text-foreground font-medium">15–18 Sep 2026</b>
+            </p>
+          </div>
         </div>
         <div className="text-muted-foreground flex items-center gap-3 text-[13px]">
           <span aria-live="polite">
@@ -137,7 +141,7 @@ export function RosterPage() {
                 {band === "ON_TRACK" ? (
                   // Twenty people who are fine are a table. Cards have to earn
                   // their existence and "is fine" does not earn one.
-                  <QuietTable cards={cards} onOpen={setDetail} dimmed={dimmed} />
+                  <QuietGrid cards={cards} onOpen={setDetail} dimmed={dimmed} />
                 ) : (
                   cards.map((c) => (
                     <RosterCardItem

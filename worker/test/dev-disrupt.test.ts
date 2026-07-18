@@ -286,3 +286,53 @@ describe("REGRESSION: reset must not leave a dangling slot binding", () => {
     expect(slot!.dispatch_id).toBe("dsp-venue");
   });
 });
+
+describe("REGRESSION: reset survives an approved impact", () => {
+  // Hit live from the admin page: "The worker did not accept that."
+  // reset deleted approvals BEFORE the actions and dispatches that reference
+  // them (action.approval_id and dispatch.approval_id both REFERENCE
+  // approval(id) — schema.sql:270, :298), so D1 threw FOREIGN KEY constraint
+  // failed and rolled the whole thing back.
+  //
+  // It stayed hidden because no earlier test produced an action carrying an
+  // approval_id. Nothing referenced an approval, so parent-first looked fine.
+  test("an action with an approval_id does not block reset", async () => {
+    await run();
+    const impactId = impactIdFor("emp-us-04");
+    await env.DB.batch([
+      env.DB.prepare(
+        `INSERT INTO approval (id, impact_id, offer_id, reason, requested_at)
+         VALUES ('apr-fk', ?, ?, 'OVER_THRESHOLD', ?)`,
+      ).bind(impactId, `ofr-${impactId}-2`, NOW.toISOString()),
+      env.DB.prepare(
+        `INSERT INTO dispatch (id,kind,impact_id,employee_id,approval_id,idempotency_key,status,created_at)
+         VALUES ('dsp-fk','CALL_EMPLOYEE',?, 'emp-us-04','apr-fk','k-fk','RESOLVED',?)`,
+      ).bind(impactId, NOW.toISOString()),
+      env.DB.prepare(
+        `INSERT INTO action (id,kind,subject_type,subject_id,employee_id,dispatch_id,approval_id,
+                             actor_kind,idempotency_key,state,created_at)
+         VALUES ('act-fk','REISSUE','impact',?, 'emp-us-04','dsp-fk','apr-fk','COORDINATOR','k-act','COMPLETED',?)`,
+      ).bind(impactId, NOW.toISOString()),
+      env.DB.prepare(
+        `INSERT INTO call_log (id, dispatch_id, callee) VALUES ('cl-fk','dsp-fk','Elena')`,
+      ),
+    ]);
+
+    // Previously threw D1_ERROR: FOREIGN KEY constraint failed.
+    const res = await reset(env as any);
+    expect(res.status).toBe(200);
+
+    for (const t of ["approval", "action", "dispatch", "call_log", "offer", "disruption_impact"]) {
+      expect(await scalar<number>(env, `SELECT COUNT(*) FROM ${t}`), `${t} not cleared`).toBe(0);
+    }
+  });
+
+  test("reset is repeatable after an approve cycle", async () => {
+    await run();
+    await reset(env as any);
+    await run();
+    const res = await reset(env as any);
+    expect(res.status).toBe(200);
+    expect(await scalar<number>(env, `SELECT COUNT(*) FROM disruption_impact`)).toBe(0);
+  });
+});
