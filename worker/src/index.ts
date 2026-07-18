@@ -15,6 +15,7 @@ import { assertDialable, NotAllowlisted } from "./allowlist";
 import { disrupt, reset } from "./dev-disrupt";
 import { replay, replayReset } from "./dev-replay";
 import { getRoster } from "./roster";
+import { placeCall, releaseCall } from "./dev-call";
 import { decideApproval, TransitionError, type Decision } from "./transitions";
 
 export interface Env {
@@ -411,6 +412,13 @@ export default {
       }
       if (url.pathname === "/api/dev/disrupt" && req.method === "POST") {
         return disrupt(env, new Date());
+      }
+      if (url.pathname === "/api/dev/call" && req.method === "POST") {
+        return placeCall(env, await req.json().catch(() => ({})), new Date());
+      }
+      if (url.pathname === "/api/dev/call/release" && req.method === "POST") {
+        const b = (await req.json().catch(() => ({}))) as { slot?: string };
+        return releaseCall(env, b.slot ?? "slot-a");
       }
       if (url.pathname === "/api/dev/reset" && req.method === "POST") {
         return reset(env);
