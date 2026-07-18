@@ -1,0 +1,3 @@
+{"t": 0.613, "raw": "{\"type\":\"connected\",\"agent_id\":\"f2c824a1-b1b3-49fa-91f2-d3778f863776\",\"agent_name\":\"Chingu Dispatch\",\"timestamp\":\"2026-07-18T18:04:16.785269\"}"}
+{"t": 5.328, "raw": "{\"type\":\"debug_event\",\"event_type\":\"session_started\",\"data\":{\"started_at\":\"2026-07-18T18:04:20.871476\",\"participant_identity\":null},\"timestamp\":\"2026-07-18T18:04:20.87833+00:00\",\"session_id\":\"user-ece421c0-agent-f2c824a1-api-22520c5c\"}"}
+{"t": 30.665, "raw": "{\"type\":\"debug_event\",\"event_type\":\"session_started\",\"data\":{\"started_at\":\"2026-07-18T18:04:46.392181\",\"participant_identity\":null},\"timestamp\":\"2026-07-18T18:04:46.397268+00:00\",\"session_id\":\"user-ece421c0-agent-f2c824a1-api-22520c5c\"}"}
