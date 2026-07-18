@@ -324,7 +324,13 @@ export class IngestDO extends DurableObject<Env> {
     if (!tokRes.ok) throw new Error(`debug token ${tokRes.status}`);
     const { ws_url } = (await tokRes.json()) as { ws_url: string };
 
-    const res = await fetch(ws_url, { headers: { Upgrade: "websocket" } });
+    // workerd's fetch() refuses a wss:// scheme outright — "Fetch API cannot
+    // load: wss://..." — even with the Upgrade header. The WebSocket handshake
+    // is an HTTP request, so it has to be addressed as https://; the runtime
+    // returns the socket on `webSocket` regardless.
+    const httpUrl = ws_url.replace(/^wss:\/\//, "https://").replace(/^ws:\/\//, "http://");
+
+    const res = await fetch(httpUrl, { headers: { Upgrade: "websocket" } });
     const ws = res.webSocket;
     if (!ws) throw new Error(`no websocket in upgrade response (${res.status})`);
     ws.accept();
@@ -531,7 +537,23 @@ export default {
             participant_name: job.employeeId,
           }),
         });
-        if (!res.ok) throw new Error(`calls ${res.status}: ${await res.text()}`);
+        if (!res.ok) {
+          const body = await res.text();
+          // 429 is a DAILY quota, not a transient blip — the account is capped
+          // at 10 outbound calls/day on Developer. Retrying it four times just
+          // spends the retry budget re-learning the same no, and on any status
+          // where the call may have landed it risks dialling twice. Terminal.
+          if (res.status === 429 || res.status === 402 || res.status === 403) {
+            await env.CALL.getByName(job.dispatchId).append("error", {
+              message: `calls ${res.status}: ${body}`,
+              terminal: true,
+            });
+            await advance(env, job.dispatchId, "FAILED");
+            msg.ack();
+            continue;
+          }
+          throw new Error(`calls ${res.status}: ${body}`);
+        }
 
         // No session_id here -- only room_name. That is the join key.
         const { room_name } = (await res.json()) as { room_name: string };
@@ -539,7 +561,22 @@ export default {
           .bind(room_name, job.dispatchId)
           .run();
         await advance(env, job.dispatchId, "IN_CALL");
-        await env.INGEST.getByName("singleton").bind(room_name, job.dispatchId);
+
+        // Best-effort, and deliberately so. The call is ALREADY PLACED by this
+        // point — the phone is ringing. Binding the room to the debug stream is
+        // observability, and letting it throw put the whole message back on the
+        // queue, so a websocket problem re-POSTed to /api/v1/calls and dialled
+        // the traveller again. Four attempts, then the DLQ.
+        //
+        // Never retry a side effect that already happened.
+        try {
+          await env.INGEST.getByName("singleton").bind(room_name, job.dispatchId);
+        } catch (err) {
+          await env.CALL.getByName(job.dispatchId).append("warn", {
+            message: `debug stream unavailable: ${String(err)}`,
+            impact: "call placed; live transcript will be missing",
+          });
+        }
 
         msg.ack();
       } catch (err) {

@@ -156,10 +156,15 @@ export async function disrupt(
   env: Env,
   now: Date,
   ctx?: ExecutionContext | null,
-  // Default OFF: the test suite calls disrupt() dozens of times, and a default
-  // of true would kick a ~74s replay timeline on every one of them. The route
-  // opts in; unit tests get the pure write.
-  autoDispatch = false,
+  // Default ON: firing the disruption should start the work. Requiring a
+  // second curl between "flight cancelled" and "agent working" undercuts the
+  // whole claim the product makes.
+  //
+  // Safe to default because the block below is guarded on env.DISPATCH_Q. The
+  // test harness boots D1 only, so unit tests get the pure write and never kick
+  // a ~74s replay timeline — which is exactly what hung the suite when this was
+  // first switched on.
+  autoDispatch = true,
 ): Promise<Response> {
   const detectedAt = now.toISOString();
   const affected = await findAffected(env);
@@ -250,7 +255,7 @@ export async function disrupt(
 
   // ---- start the work ------------------------------------------------------
   const dispatched: { employee: string; via: "call" | "replay" | "parked" }[] = [];
-  if (autoDispatch) {
+  if (autoDispatch && env.DISPATCH_Q) {
     const allowed = new Set(
       (env.DIAL_ALLOWLIST ?? "").split(",").map((s) => s.trim()).filter(Boolean),
     );
