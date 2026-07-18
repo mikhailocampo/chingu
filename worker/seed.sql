@@ -93,7 +93,7 @@ INSERT OR REPLACE INTO employee (id, org_id, name, email, phone_e164, home_base,
 -- US-based (9) + 1 unbooked (10th).
 -- emp-us-07 is AT_RISK at seed time: UA805 lands after event.arrival_by.
 INSERT OR REPLACE INTO employee (id, org_id, name, email, phone_e164, home_base, timezone, dietary_json, status) VALUES
-  ('emp-us-01','org-samsung','Daniel Whitfield','daniel.whitfield@example.com','+12125550101','New York','America/New_York',NULL,'OK'),
+  ('emp-us-01','org-samsung','Jinhui Kim','daniel.whitfield@example.com','+12125550101','New York','America/New_York',NULL,'OK'),
   ('emp-us-02','org-samsung','Priya Natarajan', 'priya.natarajan@example.com', '+12125550102','New York','America/New_York',
      '[{"kind":"SHELLFISH","severity":"ALLERGY_SEVERE","notes":"anaphylaxis; carries epipen","disclose_ok":1}]','OK'),
   ('emp-us-03','org-samsung','Marcus Bell',     'marcus.bell@example.com',     '+12125550103','New York','America/New_York',NULL,'OK'),

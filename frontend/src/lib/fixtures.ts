@@ -99,7 +99,7 @@ const NORA: RosterCard = {
 export function calmRoster(): RosterResponse {
   const cards = [
     ...KR.map(green),
-    green(toSeed(["emp-us-01", "Daniel Whitfield", "New York"])),
+    green(toSeed(["emp-us-01", "Jinhui Kim", "New York"])),
     green(toSeed(["emp-us-02", "Priya Natarajan", "New York"])),
     green(toSeed(["emp-us-03", "Marcus Bell", "New York"])),
     green(toSeed(["emp-us-04", "Elena Duarte", "Newark"])),
@@ -154,7 +154,7 @@ export function disruptedRoster(): RosterResponse {
 
   const daniel: RosterCard = {
     employeeId: "emp-us-01",
-    name: "Daniel Whitfield",
+    name: "Jinhui Kim",
     homeBase: "New York",
     status: "FAILED",
     band: "FAILED",

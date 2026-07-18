@@ -5,7 +5,7 @@
  * WHY THIS EXISTS
  * ---------------
  * The demo fires one disruption and catches four travellers. Exactly ONE of
- * them (emp-us-01, Daniel Whitfield) gets a real VocalBridge phone call. If the
+ * them (emp-us-01, Jinhui Kim) gets a real VocalBridge phone call. If the
  * other three sit at AT_RISK while that one phone rings, the board looks dead
  * for ninety seconds — which is the opposite of what the product does.
  *
@@ -167,7 +167,7 @@ interface Traveller {
 }
 
 /**
- * Never emp-us-01. That is Daniel Whitfield, and he gets a real phone call.
+ * Never emp-us-01. That is Jinhui Kim, and he gets a real phone call.
  *
  * Two resolve alone and one escalates, deliberately: the whole argument of the
  * product is that the agent handles what it may and stops at the money it may

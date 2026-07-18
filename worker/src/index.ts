@@ -24,7 +24,13 @@ export interface Env {
   CALL: DurableObjectNamespace<CallDO>;
   DB: D1Database;
   DISPATCH_Q: Queue<DispatchJob>;
-  VB_API_KEY: string;
+  /**
+   * Doppler is the source of truth and names it VOCALBRIDGE_API_KEY
+   * (`doppler run -p chingu -c dev -- ...`). VB_API_KEY is kept as a fallback
+   * so a plain `wrangler dev` reading .dev.vars still works.
+   */
+  VOCALBRIDGE_API_KEY?: string;
+  VB_API_KEY?: string;
   VB_AGENT_ID: string;
   /** Comma-separated E.164 numbers we are permitted to dial. See allowlist.ts. */
   DIAL_ALLOWLIST?: string;
@@ -56,6 +62,13 @@ const VB_BASE = "https://vocalbridgeai.com";
  * v1 has no session layer, so this is the seeded coordinator (Hyejin Cho).
  */
 const OPERATOR_ID = "op-coord";
+
+/** Doppler's name wins; .dev.vars is the local fallback. */
+function vbKey(env: Env): string {
+  const k = env.VOCALBRIDGE_API_KEY ?? env.VB_API_KEY;
+  if (!k) throw new Error("no VocalBridge API key (set VOCALBRIDGE_API_KEY via doppler)");
+  return k;
+}
 
 /**
  * Advance a dispatch in BOTH places, D1 first.
@@ -315,7 +328,7 @@ export class IngestDO extends DurableObject<Env> {
     const tokRes = await fetch(`${VB_BASE}/api/v1/debug/token`, {
       method: "POST",
       headers: {
-        "X-API-Key": this.env.VB_API_KEY,
+        "X-API-Key": vbKey(this.env),
         "X-Agent-Id": this.env.VB_AGENT_ID,
         "content-type": "application/json",
       },
@@ -528,7 +541,7 @@ export default {
         const res = await fetch(`${VB_BASE}/api/v1/calls`, {
           method: "POST",
           headers: {
-            "X-API-Key": env.VB_API_KEY,
+            "X-API-Key": vbKey(env),
             "X-Agent-Id": env.VB_AGENT_ID,
             "content-type": "application/json",
           },
