@@ -1,0 +1,168 @@
+{
+  "timestamp" : "2026-07-18T19:26:18.659643905Z",
+  "hotels" : [ {
+    "hotel" : {
+      "hotelCode" : "100105512",
+      "hotelName" : "Hilton Garden Inn Queens Jfk Airport",
+      "logo" : "http://vcmp-hotels.cert.sabre.com/image/upload/f_auto,q_auto:best,t_vcmp_logo/v1547155156/hotel/l/gi/GI.png",
+      "latitude" : 40.6657,
+      "longitude" : -73.80589,
+      "address" : {
+        "addressLine1" : "148-18 134th Street",
+        "cityName" : "Jamaica",
+        "cityCode" : "JFK",
+        "stateProvinceCode" : "NY",
+        "postalCode" : "11430",
+        "countryName" : "United States of America",
+        "countryCode" : "US"
+      },
+      "contact" : {
+        "phone" : "1-718-322-4448",
+        "fax" : "1-718-322-3338"
+      },
+      "amenities" : [ "Wheelchair access", "Non-smoking rooms (generic)", "Rollaway adult", "Crib charge", "Extra person", "Recreation Facilities", "Dining Room", "Business center", "Tennis court", "Golf", "High speed internet access", "Interior corridors", "Meeting rooms", "Free airport shuttle", "Health club", "Air conditioning", "Indoor pool", "Pool", "Restaurant", "Room service", "Dry cleaning", "Parking", "Free Parking", "Airport shuttle service" ]
+    },
+    "imageUrl" : "https://media.iceportal.com/59815/photos/85572711_XXL.jpg",
+    "rateDetails" : {
+      "startDate" : "2026-09-15",
+      "endDate" : "2026-09-18",
+      "averageNightlyRate" : 311.85,
+      "approxTotalPrice" : 935.55,
+      "areAdditionalFeesInclusive" : true,
+      "isTaxInclusive" : true,
+      "commissionType" : "Percentage",
+      "rateSource" : "100",
+      "rateKey" : "xyTk29fiN+CTTZjaN4Bu4ekBsQtJWVCYQ0HNoalx/ysxpy4U7lw7QC4jDjNVwn74sti9G7ry3QYqZt4ye/IYftKBhIPagXDbj2k2umJMjrbHGhLT0EWMF5mgnWOiyIJvYtfgSXjr+6GiGQOTBGBV5OxsxSNrs2ZUNC/p7RMOmmkmy5E7j9XT35uV0jXdqC/M89htJAbZ9GC3zUTPzQwYW2o/7skATypVofsYbIFqkjZNUfVWqrSdTk/JZxTg8WH9BBiIAStHdELga4+Qol1ptzoJz6DzUNVHMHvHXTknxE172opIMqNIeKnwCq2zke1osTIQdCttD2/bO7G0f03tugI6A+XTehkswJDY25mtlGL8g1AcorZRz2m8B6HrJ56JwqN2nPbzbBPOAI4LeXt5jGjtAPKDUdcTsqtUjYA8b9SXt+TZ2559mOt/CLKAdlltqeiUV9axzcQ74ztIOH9qTRPc4a5fWTqv+8JBj0Q6uY4pgIFARjd4ZIij8r4LNAPhF71X29fO7r6vYya72f3Ce3h7Rjz36TYoZ5TMstJbzmC4JnjufJN7YdEkmqaz30WBBvaGaOp7ZHQpe36avXZLS57BDXMbhKZjp7mq+/Vm9UXAcXUmn5YVreQOKzw5CT9agC4YFXoQUEkGvIbeNujt3bcrIo0YzD/OWmbrFQDClm7BH33XGM8pGDD6FdwYiSJxo50GbbiUHPu55i37IyXoyA==",
+      "currencyCode" : "USD"
+    },
+    "rooms" : [ {
+      "roomIndex" : 1,
+      "nonSmoking" : false,
+      "roomTypeName" : "1 KING BED-TUB COMP WIFI- BED WITH ADJUSTABLE FIRMNESS DIAL HI DEF.FLAT SCREEN TV-FRIDGE-POD COFFEE BRWR",
+      "numberOfAdults" : 1,
+      "bedTypes" : [ {
+        "code" : "3",
+        "name" : "King",
+        "numberOfBeds" : 1
+      } ],
+      "roomDescription" : {
+        "name" : "RESTRICTED CXL",
+        "text" : "RESTRICTED CXL STRICTER THAN STANDARD CXL POLICY. SEE TERMS AND CONDITIONS FOR CXL POLICY."
+      },
+      "amenities" : [ "Bathtub", "Widescreen TV", "Refrigerator" ],
+      "ratePlans" : [ {
+        "ratePlanName" : "RESTRICTED CXL",
+        "ratePlanCode" : "CMK",
+        "ratePlanType" : "1 KING BED-TUB COMP WIFI- BED WITH ADJUSTABLE FIRMNESS DIAL HI DEF.FLAT SCREEN TV-FRIDGE-POD COFFEE BRWR",
+        "isRatePrepaid" : false,
+        "limitedAvailability" : false,
+        "rateSource" : "100",
+        "rateKey" : "xyTk29fiN+CTTZjaN4Bu4ekBsQtJWVCYQ0HNoalx/ysxpy4U7lw7QC4jDjNVwn74sti9G7ry3QYqZt4ye/IYftKBhIPagXDbj2k2umJMjrbHGhLT0EWMF5mgnWOiyIJvYtfgSXjr+6GiGQOTBGBV5OxsxSNrs2ZUNC/p7RMOmmkmy5E7j9XT35uV0jXdqC/M89htJAbZ9GC3zUTPzQwYW2o/7skATypVofsYbIFqkjZNUfVWqrSdTk/JZxTg8WH9BBiIAStHdELga4+Qol1ptzoJz6DzUNVHMHvHXTknxE172opIMqNIeKnwCq2zke1osTIQdCttD2/bO7G0f03tugI6A+XTehkswJDY25mtlGL8g1AcorZRz2m8B6HrJ56JwqN2nPbzbBPOAI4LeXt5jGjtAPKDUdcTsqtUjYA8b9SXt+TZ2559mOt/CLKAdlltqeiUV9axzcQ74ztIOH9qTRPc4a5fWTqv+8JBj0Q6uY4pgIFARjd4ZIij8r4LNAPhF71X29fO7r6vYya72f3Ce3h7Rjz36TYoZ5TMstJbzmC4JnjufJN7YdEkmqaz30WBBvaGaOp7ZHQpe36avXZLS57BDXMbhKZjp7mq+/Vm9UXAcXUmn5YVreQOKzw5CT9agC4YFXoQUEkGvIbeNujt3bcrIo0YzD/OWmbrFQDClm7BH33XGM8pGDD6FdwYiSJxo50GbbiUHPu55i37IyXoyA==",
+        "productCode" : "A01CMK",
+        "inclusions" : [ "Free high speed internet connection" ],
+        "rateDetails" : {
+          "startDate" : "2026-09-15",
+          "endDate" : "2026-09-18",
+          "averageNightlyRate" : 311.85,
+          "approxTotalPrice" : 935.55,
+          "areAdditionalFeesInclusive" : true,
+          "isTaxInclusive" : true,
+          "rates" : [ {
+            "startDate" : "2026-09-15",
+            "endDate" : "2026-09-16",
+            "amountBeforeTax" : 264.22
+          }, {
+            "startDate" : "2026-09-16",
+            "endDate" : "2026-09-17",
+            "amountBeforeTax" : 265.45
+          }, {
+            "startDate" : "2026-09-17",
+            "endDate" : "2026-09-18",
+            "amountBeforeTax" : 276.4
+          } ],
+          "taxes" : {
+            "amount" : 129.48
+          },
+          "roomExtras" : [ {
+            "description" : "Cribs",
+            "amount" : 0.0
+          }, {
+            "description" : "Rollaway bed",
+            "amount" : 0.0
+          }, {
+            "description" : "Extra adult charge",
+            "amount" : 10.0
+          } ],
+          "cancelPenalties" : [ {
+            "refundable" : true,
+            "deadline" : {
+              "absoluteDeadline" : "2026-09-11T00:00:00-04:00"
+            },
+            "amountPercent" : {
+              "currencyCode" : "USD"
+            }
+          } ],
+          "guarantee" : {
+            "guaranteeType" : "GUAR",
+            "guaranteesAccepted" : [ {
+              "guaranteeType" : "Credit card",
+              "paymentCards" : [ {
+                "cardCode" : "AC",
+                "cardName" : "AIR CANADA"
+              }, {
+                "cardCode" : "AX",
+                "cardName" : "AMERICAN EXPRESS"
+              }, {
+                "cardCode" : "BA",
+                "cardName" : "BANKAMERICARD"
+              }, {
+                "cardCode" : "BR",
+                "cardName" : "BANCOMER"
+              }, {
+                "cardCode" : "BX",
+                "cardName" : "BANAMEX CARD"
+              }, {
+                "cardCode" : "CA",
+                "cardName" : "MASTERCARD"
+              }, {
+                "cardCode" : "CB",
+                "cardName" : "CARTE BLANCHE"
+              }, {
+                "cardCode" : "CX",
+                "cardName" : "CHOICE CREDIT CARD"
+              }, {
+                "cardCode" : "DC",
+                "cardName" : "DINERS CLUB CARD"
+              }, {
+                "cardCode" : "DS",
+                "cardName" : "DISCOVER CARD"
+              }, {
+                "cardCode" : "EC",
+                "cardName" : "EUROCARD"
+              }, {
+                "cardCode" : "ER",
+                "cardName" : "ENROUTE"
+              }, {
+                "cardCode" : "IK",
+                "cardName" : "MASTER CARD"
+              }, {
+                "cardCode" : "JC",
+                "cardName" : "JCB CREDIT CARD"
+              }, {
+                "cardCode" : "JL",
+                "cardName" : "JAPAN AIRLINES"
+              }, {
+                "cardCode" : "MC",
+                "cardName" : "MASTER CARD"
+              }, {
+                "cardCode" : "VI",
+                "cardName" : "VISA"
+              } ]
+            } ]
+          },
+          "currencyCode" : "USD"
+        }
+      } ]
+    } ]
+  } ]
+}

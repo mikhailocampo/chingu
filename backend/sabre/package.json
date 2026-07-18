@@ -1,0 +1,19 @@
+{
+  "name": "@chingu/sabre",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Pure TypeScript Sabre adapter. No Cloudflare bindings, no D1, no env — config + injected fetch in, typed domain objects out.",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.6.0"
+  }
+}

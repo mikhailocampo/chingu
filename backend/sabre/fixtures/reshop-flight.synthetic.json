@@ -1,0 +1,144 @@
+{
+  "_provenance": "HAND-WRITTEN. Not a live capture. See HAND-WRITTEN.md. Numbers are from the verified 2026-07-18T16:41Z SABRE_LEARNINGS run against ticket 1807361095425; JSON nesting is reconstructed from the FlightReshap OpenAPI spec shape.",
+  "timestamp": "2026-07-18T16:41:02.113Z",
+  "reshopOffers": [
+    {
+      "id": "rs-even-ke81",
+      "validUntil": "2026-07-18T17:01:02Z",
+      "totalPriceDifference": {
+        "chargeType": "Even",
+        "baseFare": { "amount": "0.00", "currencyCode": "USD" },
+        "totalTax": { "amount": "0.00", "currencyCode": "USD" },
+        "totalFee": { "amount": "0.00", "currencyCode": "USD" },
+        "grandTotal": { "amount": "0.00", "currencyCode": "USD" },
+        "isResidualAmountForfeited": false
+      },
+      "flights": [
+        {
+          "airlineCode": "KE",
+          "flightNumber": 81,
+          "operatingAirlineCode": "KE",
+          "operatingFlightNumber": 81,
+          "fromAirportCode": "ICN",
+          "toAirportCode": "JFK",
+          "departureDate": "2026-09-15",
+          "departureTime": "10:00",
+          "arrivalDate": "2026-09-15",
+          "arrivalTime": "11:00"
+        }
+      ]
+    },
+    {
+      "id": "rs-addcollect-ke85",
+      "validUntil": "2026-07-18T17:01:02Z",
+      "totalPriceDifference": {
+        "chargeType": "Add collect",
+        "baseFare": { "amount": "0.00", "currencyCode": "USD" },
+        "totalTax": { "amount": "0.00", "currencyCode": "USD" },
+        "totalFee": { "amount": "101.00", "currencyCode": "USD" },
+        "grandTotal": { "amount": "101.00", "currencyCode": "USD" },
+        "isResidualAmountForfeited": false
+      },
+      "flights": [
+        {
+          "airlineCode": "KE",
+          "flightNumber": 85,
+          "operatingAirlineCode": "KE",
+          "operatingFlightNumber": 85,
+          "fromAirportCode": "ICN",
+          "toAirportCode": "JFK",
+          "departureDate": "2026-09-15",
+          "departureTime": "19:30",
+          "arrivalDate": "2026-09-15",
+          "arrivalTime": "20:30"
+        }
+      ]
+    },
+    {
+      "id": "rs-addcollect-via-msp",
+      "validUntil": "2026-07-18T17:01:02Z",
+      "totalPriceDifference": {
+        "chargeType": "Add collect",
+        "baseFare": { "amount": "60.00", "currencyCode": "USD" },
+        "totalTax": { "amount": "-7.20", "currencyCode": "USD" },
+        "totalFee": { "amount": "101.00", "currencyCode": "USD" },
+        "grandTotal": { "amount": "153.80", "currencyCode": "USD" },
+        "isResidualAmountForfeited": false
+      },
+      "flights": [
+        {
+          "airlineCode": "KE",
+          "flightNumber": 5033,
+          "operatingAirlineCode": "DL",
+          "operatingFlightNumber": 158,
+          "fromAirportCode": "ICN",
+          "toAirportCode": "MSP",
+          "departureDate": "2026-09-15",
+          "departureTime": "09:20",
+          "arrivalDate": "2026-09-15",
+          "arrivalTime": "07:45"
+        },
+        {
+          "airlineCode": "KE",
+          "flightNumber": 7344,
+          "operatingAirlineCode": "DL",
+          "operatingFlightNumber": 1422,
+          "fromAirportCode": "MSP",
+          "toAirportCode": "JFK",
+          "departureDate": "2026-09-15",
+          "departureTime": "10:15",
+          "arrivalDate": "2026-09-15",
+          "arrivalTime": "13:55"
+        }
+      ]
+    },
+    {
+      "id": "rs-refund-downgrade",
+      "validUntil": "2026-07-18T17:01:02Z",
+      "totalPriceDifference": {
+        "chargeType": "Refund",
+        "baseFare": { "amount": "-1600.00", "currencyCode": "USD" },
+        "totalTax": { "amount": "-40.40", "currencyCode": "USD" },
+        "totalFee": { "amount": "101.00", "currencyCode": "USD" },
+        "grandTotal": { "amount": "-1539.40", "currencyCode": "USD" },
+        "isResidualAmountForfeited": false
+      },
+      "flights": [
+        {
+          "airlineCode": "KE",
+          "flightNumber": 87,
+          "operatingAirlineCode": "KE",
+          "operatingFlightNumber": 87,
+          "fromAirportCode": "ICN",
+          "toAirportCode": "JFK",
+          "departureDate": "2026-09-16",
+          "departureTime": "09:00",
+          "arrivalDate": "2026-09-16",
+          "arrivalTime": "10:20"
+        }
+      ]
+    },
+    {
+      "id": "rs-unknown-chargetype",
+      "validUntil": "2026-07-18T17:01:02Z",
+      "totalPriceDifference": {
+        "chargeType": "Unknown",
+        "grandTotal": { "amount": "0.00", "currencyCode": "USD" }
+      },
+      "flights": [
+        {
+          "airlineCode": "KE",
+          "flightNumber": 89,
+          "operatingAirlineCode": "KE",
+          "operatingFlightNumber": 89,
+          "fromAirportCode": "ICN",
+          "toAirportCode": "JFK",
+          "departureDate": "2026-09-17",
+          "departureTime": "12:00",
+          "arrivalDate": "2026-09-17",
+          "arrivalTime": "13:20"
+        }
+      ]
+    }
+  ]
+}

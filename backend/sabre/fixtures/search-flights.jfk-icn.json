@@ -1,0 +1,577 @@
+{
+  "timestamp" : "2026-07-18T19:23:54.777Z",
+  "flights" : [ {
+    "id" : "252a0920-5bb4-4d58-aa9e-00c45f3922cd",
+    "departureAirportCode" : "JFK",
+    "departureDate" : "2026-09-14",
+    "departureTime" : "13:10",
+    "arrivalAirportCode" : "ICN",
+    "arrivalDate" : "2026-09-15",
+    "arrivalTime" : "17:50",
+    "operatingAirlineCode" : "KE",
+    "operatingFlightNumber" : 82,
+    "marketingAirlineCode" : "DL",
+    "marketingFlightNumber" : 7842,
+    "disclosureAirlineCode" : "KE",
+    "aircraftTypeCode" : "388",
+    "durationInMinutes" : 940,
+    "departureTerminal" : "1",
+    "arrivalTerminal" : "2"
+  }, {
+    "id" : "6713ad72-6314-46ec-95ab-509a8e3ec995",
+    "departureAirportCode" : "HKG",
+    "departureDate" : "2026-09-15",
+    "departureTime" : "09:25",
+    "arrivalAirportCode" : "ICN",
+    "arrivalDate" : "2026-09-15",
+    "arrivalTime" : "14:05",
+    "operatingAirlineCode" : "CX",
+    "operatingFlightNumber" : 410,
+    "marketingAirlineCode" : "CX",
+    "marketingFlightNumber" : 410,
+    "aircraftTypeCode" : "773",
+    "durationInMinutes" : 220,
+    "departureTerminal" : "1",
+    "arrivalTerminal" : "1"
+  }, {
+    "id" : "6936e53e-d361-4df8-ba49-e22bb429cfa4",
+    "departureAirportCode" : "JFK",
+    "departureDate" : "2026-09-14",
+    "departureTime" : "10:00",
+    "arrivalAirportCode" : "HKG",
+    "arrivalDate" : "2026-09-15",
+    "arrivalTime" : "13:55",
+    "operatingAirlineCode" : "CX",
+    "operatingFlightNumber" : 841,
+    "marketingAirlineCode" : "CX",
+    "marketingFlightNumber" : 841,
+    "aircraftTypeCode" : "359",
+    "durationInMinutes" : 955,
+    "departureTerminal" : "8",
+    "arrivalTerminal" : "1"
+  }, {
+    "id" : "f83110ee-6c63-4ba5-9368-6aedb25d3e48",
+    "departureAirportCode" : "JFK",
+    "departureDate" : "2026-09-14",
+    "departureTime" : "01:30",
+    "arrivalAirportCode" : "ICN",
+    "arrivalDate" : "2026-09-15",
+    "arrivalTime" : "06:05",
+    "operatingAirlineCode" : "OZ",
+    "operatingFlightNumber" : 223,
+    "marketingAirlineCode" : "OZ",
+    "marketingFlightNumber" : 223,
+    "aircraftTypeCode" : "359",
+    "durationInMinutes" : 935,
+    "departureTerminal" : "1",
+    "arrivalTerminal" : "2"
+  }, {
+    "id" : "176e3bdb-bab1-431b-b225-af68e72539ed",
+    "departureAirportCode" : "JFK",
+    "departureDate" : "2026-09-14",
+    "departureTime" : "11:45",
+    "arrivalAirportCode" : "ICN",
+    "arrivalDate" : "2026-09-15",
+    "arrivalTime" : "16:30",
+    "operatingAirlineCode" : "OZ",
+    "operatingFlightNumber" : 221,
+    "marketingAirlineCode" : "OZ",
+    "marketingFlightNumber" : 221,
+    "aircraftTypeCode" : "359",
+    "durationInMinutes" : 945,
+    "departureTerminal" : "1",
+    "arrivalTerminal" : "2"
+  }, {
+    "id" : "4509723b-31c3-411a-8e3a-b41eb4ca5e83",
+    "departureAirportCode" : "HKG",
+    "departureDate" : "2026-09-15",
+    "departureTime" : "16:25",
+    "arrivalAirportCode" : "ICN",
+    "arrivalDate" : "2026-09-15",
+    "arrivalTime" : "21:10",
+    "operatingAirlineCode" : "CX",
+    "operatingFlightNumber" : 416,
+    "marketingAirlineCode" : "CX",
+    "marketingFlightNumber" : 416,
+    "aircraftTypeCode" : "333",
+    "durationInMinutes" : 225,
+    "departureTerminal" : "1",
+    "arrivalTerminal" : "1"
+  }, {
+    "id" : "11b79561-7839-4333-a0fc-de5876c05271",
+    "departureAirportCode" : "JFK",
+    "departureDate" : "2026-09-14",
+    "departureTime" : "01:55",
+    "arrivalAirportCode" : "HKG",
+    "arrivalDate" : "2026-09-15",
+    "arrivalTime" : "05:35",
+    "operatingAirlineCode" : "CX",
+    "operatingFlightNumber" : 843,
+    "marketingAirlineCode" : "CX",
+    "marketingFlightNumber" : 843,
+    "aircraftTypeCode" : "359",
+    "durationInMinutes" : 940,
+    "departureTerminal" : "8",
+    "arrivalTerminal" : "1"
+  }, {
+    "id" : "05ad0a79-d0f7-4f4f-8d73-e899a36f5e26",
+    "departureAirportCode" : "JFK",
+    "departureDate" : "2026-09-14",
+    "departureTime" : "13:10",
+    "arrivalAirportCode" : "ICN",
+    "arrivalDate" : "2026-09-15",
+    "arrivalTime" : "17:50",
+    "operatingAirlineCode" : "KE",
+    "operatingFlightNumber" : 82,
+    "marketingAirlineCode" : "KE",
+    "marketingFlightNumber" : 82,
+    "aircraftTypeCode" : "388",
+    "durationInMinutes" : 940,
+    "departureTerminal" : "1",
+    "arrivalTerminal" : "2"
+  } ],
+  "journeys" : [ {
+    "id" : "19a1c5d5-15f9-4511-b638-106a7d35bf44",
+    "flightRefs" : [ "176e3bdb-bab1-431b-b225-af68e72539ed" ],
+    "requestedJourneyIndex" : 0
+  }, {
+    "id" : "d1ab0164-e2a5-4b88-a868-d8bd0d9cfa6f",
+    "flightRefs" : [ "f83110ee-6c63-4ba5-9368-6aedb25d3e48" ],
+    "requestedJourneyIndex" : 0
+  }, {
+    "id" : "6b789ef2-4c6d-4812-b855-f724be76eadc",
+    "flightRefs" : [ "05ad0a79-d0f7-4f4f-8d73-e899a36f5e26" ],
+    "requestedJourneyIndex" : 0
+  }, {
+    "id" : "76c5f789-59a1-40a0-9a9d-751e2329ef92",
+    "flightRefs" : [ "11b79561-7839-4333-a0fc-de5876c05271", "6713ad72-6314-46ec-95ab-509a8e3ec995" ],
+    "requestedJourneyIndex" : 0
+  }, {
+    "id" : "dd6bbe3e-fd1d-4042-8efb-de2f58bbc78f",
+    "flightRefs" : [ "6936e53e-d361-4df8-ba49-e22bb429cfa4", "4509723b-31c3-411a-8e3a-b41eb4ca5e83" ],
+    "requestedJourneyIndex" : 0
+  }, {
+    "id" : "b3daefab-c2cd-49ab-ba12-a692618ceb1c",
+    "flightRefs" : [ "252a0920-5bb4-4d58-aa9e-00c45f3922cd" ],
+    "requestedJourneyIndex" : 0
+  } ],
+  "offers" : [ {
+    "type" : "FlightOffer",
+    "id" : "e4dafcbb-1a58-471e-8101-6feedd255ee9",
+    "createdAt" : "2026-07-18T19:23:54Z",
+    "validUntil" : "2026-07-18T19:43:54Z",
+    "source" : {
+      "provider" : "Sabre",
+      "distributionModel" : "ATPCO"
+    },
+    "totalPrice" : {
+      "amount" : "559.30",
+      "currencyCode" : "USD"
+    },
+    "paymentTimeLimit" : "2026-07-21T23:59:00Z",
+    "applicableToPseudoCityCodes" : [ "S5OM" ],
+    "journeyRefs" : [ "dd6bbe3e-fd1d-4042-8efb-de2f58bbc78f" ],
+    "items" : [ {
+      "type" : "FlightOfferItem",
+      "fares" : [ {
+        "travelers" : [ {
+          "id" : "Passenger1",
+          "passengerTypeCode" : "ADT",
+          "requestedTravelerIndex" : 0
+        } ],
+        "fareTotal" : {
+          "equivalentFare" : "354.00",
+          "taxAmount" : "205.30",
+          "amount" : "559.30",
+          "currencyCode" : "USD"
+        },
+        "validatingAirlineCode" : "CX",
+        "fareComponents" : [ {
+          "amount" : "354.00",
+          "currencyCode" : "NUC",
+          "publishedAmount" : "354.00",
+          "publishedCurrencyCode" : "USD",
+          "exchangeRate" : "1.00000",
+          "fareBasisCode" : "NK21USIO",
+          "segmentDetails" : [ {
+            "flightRef" : "6936e53e-d361-4df8-ba49-e22bb429cfa4",
+            "bookingClassCode" : "N",
+            "cabinName" : "Economy"
+          }, {
+            "flightRef" : "4509723b-31c3-411a-8e3a-b41eb4ca5e83",
+            "bookingClassCode" : "N",
+            "cabinName" : "Economy"
+          } ],
+          "brand" : {
+            "code" : "ECONLIGHT",
+            "name" : "ECONOMY LIGHT",
+            "programId" : 248991
+          }
+        } ],
+        "refundabilityRef" : "55c55c5b-59d8-4816-a2cb-f1d5fd1ca7ec",
+        "changeRef" : "77fc1585-8256-4b49-8687-ebb53907dc09"
+      } ],
+      "isPartial" : false,
+      "id" : "dc0ab846-414e-49ec-a76a-af4e34846a7f",
+      "isMandatory" : true
+    } ]
+  }, {
+    "type" : "FlightOffer",
+    "id" : "10103dad-8069-4e62-b668-f6ccfd9dbfa5",
+    "createdAt" : "2026-07-18T19:23:54Z",
+    "validUntil" : "2026-07-18T19:43:54Z",
+    "source" : {
+      "provider" : "Sabre",
+      "distributionModel" : "ATPCO"
+    },
+    "totalPrice" : {
+      "amount" : "559.30",
+      "currencyCode" : "USD"
+    },
+    "paymentTimeLimit" : "2026-07-21T23:59:00Z",
+    "applicableToPseudoCityCodes" : [ "S5OM" ],
+    "journeyRefs" : [ "76c5f789-59a1-40a0-9a9d-751e2329ef92" ],
+    "items" : [ {
+      "type" : "FlightOfferItem",
+      "fares" : [ {
+        "travelers" : [ {
+          "id" : "Passenger1",
+          "passengerTypeCode" : "ADT",
+          "requestedTravelerIndex" : 0
+        } ],
+        "fareTotal" : {
+          "equivalentFare" : "354.00",
+          "taxAmount" : "205.30",
+          "amount" : "559.30",
+          "currencyCode" : "USD"
+        },
+        "validatingAirlineCode" : "CX",
+        "fareComponents" : [ {
+          "amount" : "354.00",
+          "currencyCode" : "NUC",
+          "publishedAmount" : "354.00",
+          "publishedCurrencyCode" : "USD",
+          "exchangeRate" : "1.00000",
+          "fareBasisCode" : "NK21USIO",
+          "segmentDetails" : [ {
+            "flightRef" : "11b79561-7839-4333-a0fc-de5876c05271",
+            "bookingClassCode" : "N",
+            "cabinName" : "Economy"
+          }, {
+            "flightRef" : "6713ad72-6314-46ec-95ab-509a8e3ec995",
+            "bookingClassCode" : "N",
+            "cabinName" : "Economy"
+          } ],
+          "brand" : {
+            "code" : "ECONLIGHT",
+            "name" : "ECONOMY LIGHT",
+            "programId" : 248991
+          }
+        } ],
+        "refundabilityRef" : "55c55c5b-59d8-4816-a2cb-f1d5fd1ca7ec",
+        "changeRef" : "77fc1585-8256-4b49-8687-ebb53907dc09"
+      } ],
+      "isPartial" : false,
+      "id" : "966c009a-2acc-4dc8-85a7-4d855c425c48",
+      "isMandatory" : true
+    } ]
+  }, {
+    "type" : "FlightOffer",
+    "id" : "8f7c9f26-2138-4eb6-b5c9-b7967007682e",
+    "createdAt" : "2026-07-18T19:23:54Z",
+    "validUntil" : "2026-07-18T19:43:54Z",
+    "source" : {
+      "provider" : "Sabre",
+      "distributionModel" : "ATPCO"
+    },
+    "totalPrice" : {
+      "amount" : "1070.50",
+      "currencyCode" : "USD"
+    },
+    "paymentTimeLimit" : "2026-07-19T23:59:00Z",
+    "applicableToPseudoCityCodes" : [ "S5OM" ],
+    "journeyRefs" : [ "b3daefab-c2cd-49ab-ba12-a692618ceb1c" ],
+    "items" : [ {
+      "type" : "FlightOfferItem",
+      "fares" : [ {
+        "travelers" : [ {
+          "id" : "Passenger1",
+          "passengerTypeCode" : "ADT",
+          "requestedTravelerIndex" : 0
+        } ],
+        "fareTotal" : {
+          "equivalentFare" : "682.00",
+          "taxAmount" : "388.50",
+          "amount" : "1070.50",
+          "currencyCode" : "USD"
+        },
+        "validatingAirlineCode" : "DL",
+        "fareComponents" : [ {
+          "amount" : "682.00",
+          "currencyCode" : "NUC",
+          "publishedAmount" : "682.00",
+          "publishedCurrencyCode" : "USD",
+          "exchangeRate" : "1.00000",
+          "fareBasisCode" : "XLX00NMD",
+          "segmentDetails" : [ {
+            "flightRef" : "252a0920-5bb4-4d58-aa9e-00c45f3922cd",
+            "bookingClassCode" : "X",
+            "cabinName" : "Economy"
+          } ],
+          "brand" : {
+            "code" : "MAINCLASC",
+            "name" : "DELTA MAIN CLASSIC",
+            "programId" : 253031
+          }
+        } ],
+        "refundabilityRef" : "b83fcbe0-c389-4039-819c-10a84198e422",
+        "changeRef" : "cc9a76f9-b642-4d24-aae5-b00c5b7d0907"
+      } ],
+      "isPartial" : false,
+      "id" : "66249a27-96e2-4137-b8a3-875aaf1b4aab",
+      "isMandatory" : true
+    } ]
+  }, {
+    "type" : "FlightOffer",
+    "id" : "3ff3f174-e725-40fe-8e39-15035c80f59b",
+    "createdAt" : "2026-07-18T19:23:54Z",
+    "validUntil" : "2026-07-18T19:43:54Z",
+    "source" : {
+      "provider" : "Sabre",
+      "distributionModel" : "ATPCO"
+    },
+    "totalPrice" : {
+      "amount" : "1071.40",
+      "currencyCode" : "USD"
+    },
+    "paymentTimeLimit" : "2026-09-14T01:30:00Z",
+    "applicableToPseudoCityCodes" : [ "S5OM" ],
+    "journeyRefs" : [ "d1ab0164-e2a5-4b88-a868-d8bd0d9cfa6f" ],
+    "items" : [ {
+      "type" : "FlightOfferItem",
+      "fares" : [ {
+        "travelers" : [ {
+          "id" : "Passenger1",
+          "passengerTypeCode" : "ADT",
+          "requestedTravelerIndex" : 0
+        } ],
+        "fareTotal" : {
+          "equivalentFare" : "682.00",
+          "taxAmount" : "389.40",
+          "amount" : "1071.40",
+          "currencyCode" : "USD"
+        },
+        "validatingAirlineCode" : "OZ",
+        "fareComponents" : [ {
+          "amount" : "682.00",
+          "currencyCode" : "NUC",
+          "publishedAmount" : "682.00",
+          "publishedCurrencyCode" : "USD",
+          "exchangeRate" : "1.00000",
+          "fareBasisCode" : "VLOAK",
+          "segmentDetails" : [ {
+            "flightRef" : "f83110ee-6c63-4ba5-9368-6aedb25d3e48",
+            "bookingClassCode" : "V",
+            "cabinName" : "Economy"
+          } ]
+        } ],
+        "refundabilityRef" : "4fdc9252-651e-4c17-88eb-76ac84cbe45b",
+        "changeRef" : "9e306e88-c764-46ea-902a-f4325e9dfd4d"
+      } ],
+      "isPartial" : false,
+      "id" : "75a3a82a-0121-46ec-9b1e-aefefa6c143c",
+      "isMandatory" : true
+    } ]
+  }, {
+    "type" : "FlightOffer",
+    "id" : "4241c78e-2888-44fd-9701-2c1db40b8322",
+    "createdAt" : "2026-07-18T19:23:54Z",
+    "validUntil" : "2026-07-18T19:43:54Z",
+    "source" : {
+      "provider" : "Sabre",
+      "distributionModel" : "ATPCO"
+    },
+    "totalPrice" : {
+      "amount" : "1071.40",
+      "currencyCode" : "USD"
+    },
+    "paymentTimeLimit" : "2026-09-14T13:10:00Z",
+    "applicableToPseudoCityCodes" : [ "S5OM" ],
+    "journeyRefs" : [ "6b789ef2-4c6d-4812-b855-f724be76eadc" ],
+    "items" : [ {
+      "type" : "FlightOfferItem",
+      "fares" : [ {
+        "travelers" : [ {
+          "id" : "Passenger1",
+          "passengerTypeCode" : "ADT",
+          "requestedTravelerIndex" : 0
+        } ],
+        "fareTotal" : {
+          "equivalentFare" : "682.00",
+          "taxAmount" : "389.40",
+          "amount" : "1071.40",
+          "currencyCode" : "USD"
+        },
+        "validatingAirlineCode" : "KE",
+        "fareComponents" : [ {
+          "amount" : "682.00",
+          "currencyCode" : "NUC",
+          "publishedAmount" : "682.00",
+          "publishedCurrencyCode" : "USD",
+          "exchangeRate" : "1.00000",
+          "fareBasisCode" : "QLX00RMD",
+          "segmentDetails" : [ {
+            "flightRef" : "05ad0a79-d0f7-4f4f-8d73-e899a36f5e26",
+            "bookingClassCode" : "Q",
+            "cabinName" : "Economy"
+          } ],
+          "brand" : {
+            "code" : "EYSTANDARD",
+            "name" : "ECONOMY STANDARD",
+            "programId" : 243167
+          }
+        } ],
+        "refundabilityRef" : "4fdc9252-651e-4c17-88eb-76ac84cbe45b",
+        "changeRef" : "112f4c11-8e55-4832-9811-877dd9734746"
+      } ],
+      "isPartial" : false,
+      "id" : "4061d43a-5b4c-4127-af48-3f7dd8b4efec",
+      "isMandatory" : true
+    } ]
+  }, {
+    "type" : "FlightOffer",
+    "id" : "e263aff3-8342-443d-ba86-e86fd39be075",
+    "createdAt" : "2026-07-18T19:23:54Z",
+    "validUntil" : "2026-07-18T19:43:54Z",
+    "source" : {
+      "provider" : "Sabre",
+      "distributionModel" : "ATPCO"
+    },
+    "totalPrice" : {
+      "amount" : "1071.40",
+      "currencyCode" : "USD"
+    },
+    "paymentTimeLimit" : "2026-09-14T11:45:00Z",
+    "applicableToPseudoCityCodes" : [ "S5OM" ],
+    "journeyRefs" : [ "19a1c5d5-15f9-4511-b638-106a7d35bf44" ],
+    "items" : [ {
+      "type" : "FlightOfferItem",
+      "fares" : [ {
+        "travelers" : [ {
+          "id" : "Passenger1",
+          "passengerTypeCode" : "ADT",
+          "requestedTravelerIndex" : 0
+        } ],
+        "fareTotal" : {
+          "equivalentFare" : "682.00",
+          "taxAmount" : "389.40",
+          "amount" : "1071.40",
+          "currencyCode" : "USD"
+        },
+        "validatingAirlineCode" : "OZ",
+        "fareComponents" : [ {
+          "amount" : "682.00",
+          "currencyCode" : "NUC",
+          "publishedAmount" : "682.00",
+          "publishedCurrencyCode" : "USD",
+          "exchangeRate" : "1.00000",
+          "fareBasisCode" : "VLOAK",
+          "segmentDetails" : [ {
+            "flightRef" : "176e3bdb-bab1-431b-b225-af68e72539ed",
+            "bookingClassCode" : "V",
+            "cabinName" : "Economy"
+          } ]
+        } ],
+        "refundabilityRef" : "4fdc9252-651e-4c17-88eb-76ac84cbe45b",
+        "changeRef" : "9e306e88-c764-46ea-902a-f4325e9dfd4d"
+      } ],
+      "isPartial" : false,
+      "id" : "ce0c5617-920a-4906-a453-f7a9e1465fea",
+      "isMandatory" : true
+    } ]
+  } ],
+  "offerAttributes" : {
+    "refundabilityItems" : [ {
+      "id" : "55c55c5b-59d8-4816-a2cb-f1d5fd1ca7ec",
+      "beforeDeparture" : {
+        "isPermitted" : true,
+        "maxCharge" : "300.00",
+        "minCharge" : "300.00",
+        "currencyCode" : "USD"
+      },
+      "afterDeparture" : {
+        "isPermitted" : true,
+        "maxCharge" : "300.00",
+        "minCharge" : "300.00",
+        "currencyCode" : "USD"
+      }
+    }, {
+      "id" : "b83fcbe0-c389-4039-819c-10a84198e422",
+      "beforeDeparture" : {
+        "isPermitted" : false
+      },
+      "afterDeparture" : {
+        "isPermitted" : false
+      }
+    }, {
+      "id" : "4fdc9252-651e-4c17-88eb-76ac84cbe45b",
+      "beforeDeparture" : {
+        "isPermitted" : true,
+        "maxCharge" : "200.00",
+        "minCharge" : "200.00",
+        "currencyCode" : "USD"
+      },
+      "afterDeparture" : {
+        "isPermitted" : false
+      }
+    } ],
+    "changeItems" : [ {
+      "id" : "77fc1585-8256-4b49-8687-ebb53907dc09",
+      "beforeDeparture" : {
+        "isPermitted" : true,
+        "maxCharge" : "200.00",
+        "minCharge" : "200.00",
+        "currencyCode" : "USD"
+      },
+      "afterDeparture" : {
+        "isPermitted" : true,
+        "maxCharge" : "200.00",
+        "minCharge" : "200.00",
+        "currencyCode" : "USD"
+      }
+    }, {
+      "id" : "cc9a76f9-b642-4d24-aae5-b00c5b7d0907",
+      "beforeDeparture" : {
+        "isPermitted" : true,
+        "maxCharge" : "0",
+        "minCharge" : "0",
+        "currencyCode" : "USD"
+      },
+      "afterDeparture" : {
+        "isPermitted" : false
+      }
+    }, {
+      "id" : "9e306e88-c764-46ea-902a-f4325e9dfd4d",
+      "beforeDeparture" : {
+        "isPermitted" : true,
+        "maxCharge" : "120.00",
+        "minCharge" : "120.00",
+        "currencyCode" : "USD"
+      },
+      "afterDeparture" : {
+        "isPermitted" : false
+      }
+    }, {
+      "id" : "112f4c11-8e55-4832-9811-877dd9734746",
+      "beforeDeparture" : {
+        "isPermitted" : true,
+        "maxCharge" : "120.00",
+        "minCharge" : "0",
+        "currencyCode" : "USD"
+      },
+      "afterDeparture" : {
+        "isPermitted" : false
+      }
+    } ]
+  }
+}

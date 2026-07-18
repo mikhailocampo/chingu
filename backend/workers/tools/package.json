@@ -1,0 +1,17 @@
+{
+  "name": "@chingu/tools-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "miniflare": "^4.20250109.0",
+    "wrangler": "^4.56.0",
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "typescript": "^5.7.0",
+    "@types/bun": "latest"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "bookingId" : "RRQQNS",
+  "startDate" : "2026-09-15",
+  "endDate" : "2026-09-15",
+  "isCancelable" : true,
+  "isTicketed" : true,
+  "travelers" : [ {
+    "givenName" : "MINJUN",
+    "surname" : "TESTPARK",
+    "type" : "ADULT",
+    "passengerCode" : "ADT",
+    "nameAssociationId" : "1",
+    "identityDocuments" : [ {
+      "documentNumber" : "M99000123",
+      "documentType" : "PASSPORT",
+      "passportType" : "Passport",
+      "expiryDate" : "2031-05-20",
+      "issuingCountryCode" : "KR",
+      "residenceCountryCode" : "KR",
+      "givenName" : "MINJUN",
+      "surname" : "TESTPARK",
+      "birthDate" : "1990-03-14",
+      "gender" : "UNDISCLOSED",
+      "isPrimaryDocumentHolder" : false,
+      "itemId" : "6aff737d0b27dec1853c6be6fc190ee3cd5bc0457e230c0272b2bccbf5884dd63cfd695ab0b99abe32ac6a2613d321327c18a8c96972b5ecc1ef305cc9be5b46"
+    } ]
+  } ],
+  "flights" : [ {
+    "itemId" : "10",
+    "confirmationId" : "CFVLKC",
+    "sourceType" : "ATPCO",
+    "flightNumber" : 81,
+    "airlineCode" : "KE",
+    "airlineName" : "KOREAN AIR",
+    "operatingFlightNumber" : 81,
+    "operatingAirlineCode" : "KE",
+    "operatingAirlineName" : "KOREAN AIR",
+    "fromAirportCode" : "ICN",
+    "toAirportCode" : "JFK",
+    "departureDate" : "2026-09-15",
+    "departureTime" : "10:00:00",
+    "departureTerminalName" : "TERMINAL 2",
+    "departureGate" : "2",
+    "arrivalDate" : "2026-09-15",
+    "arrivalTime" : "11:00:00",
+    "arrivalTerminalName" : "TERMINAL 1",
+    "arrivalGate" : "1",
+    "numberOfSeats" : 1,
+    "cabinTypeName" : "ECONOMY",
+    "cabinTypeCode" : "Y",
+    "aircraftTypeCode" : "388",
+    "aircraftTypeName" : "AIRBUS INDUSTRIE A380-800",
+    "bookingClass" : "L",
+    "meals" : [ {
+      "code" : "L",
+      "description" : "Lunch"
+    }, {
+      "code" : "M",
+      "description" : "Meal"
+    } ],
+    "flightStatusCode" : "HK",
+    "flightStatusName" : "Confirmed",
+    "durationInMinutes" : 840,
+    "distanceInMiles" : 6910,
+    "travelerIndices" : [ 1 ],
+    "identityDocuments" : [ {
+      "itemId" : "6aff737d0b27dec1853c6be6fc190ee3cd5bc0457e230c0272b2bccbf5884dd63cfd695ab0b99abe32ac6a2613d321327c18a8c96972b5ecc1ef305cc9be5b46",
+      "status" : "Confirmed"
+    } ],
+    "creationDate" : "2026-07-18",
+    "creationTime" : "11:39"
+  } ],
+  "fareRules" : [ {
+    "refundPenalties" : [ {
+      "applicability" : "BEFORE_DEPARTURE",
+      "conditionsApply" : false,
+      "penalty" : {
+        "amount" : "203.00",
+        "currencyCode" : "USD"
+      }
+    } ],
+    "exchangePenalties" : [ {
+      "applicability" : "BEFORE_DEPARTURE",
+      "conditionsApply" : true,
+      "penalty" : {
+        "amount" : "101.00",
+        "currencyCode" : "USD"
+      }
+    } ]
+  } ],
+  "allSegments" : [ {
+    "id" : "10",
+    "type" : "FLIGHT",
+    "text" : "81",
+    "vendorCode" : "KE",
+    "startDate" : "2026-09-15",
+    "startTime" : "10:00:00",
+    "startLocationCode" : "ICN",
+    "endDate" : "2026-09-15",
+    "endTime" : "11:00:00",
+    "endLocationCode" : "JFK"
+  } ],
+  "flightTickets" : [ {
+    "number" : "1807361095425",
+    "date" : "2026-07-18",
+    "agencyIataNumber" : "96111116",
+    "airlineCode" : "KE",
+    "travelerIndex" : 1,
+    "flightCoupons" : [ {
+      "itemId" : "10",
+      "couponStatus" : "Not Flown",
+      "couponStatusCode" : "I"
+    } ],
+    "payment" : {
+      "subtotal" : "649.00",
+      "taxes" : "290.23",
+      "total" : "939.23",
+      "currencyCode" : "USD"
+    },
+    "ticketStatusName" : "Issued",
+    "ticketStatusCode" : "TE",
+    "ticketingPcc" : "S5OM"
+  } ],
+  "timestamp" : "2026-07-18T19:25:42",
+  "bookingSignature" : "9e3f04a0de15692e6ffeab9e036d20acb3d345af0f6ec360dfe3e77bf0602f7d7d42a9ced2dfec146ac28e663b23656d10443cc98cd0901fd8cbaa8769e26059",
+  "request" : {
+    "confirmationId" : "RRQQNS",
+    "returnOnly" : [ "FLIGHTS", "HOTELS", "ALL_SEGMENTS", "TICKETS", "TRAVELERS", "IS_TICKETED", "IS_CANCELABLE", "PENALTIES" ]
+  }
+}

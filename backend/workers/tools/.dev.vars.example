@@ -1,0 +1,8 @@
+# One bearer token per slot. These are shared secrets between this Worker and
+# the VocalBridge agent bound to that slot — they must match the `auth.token`
+# in the agent's api_tools config exactly.
+#
+# Generate with: openssl rand -hex 24
+SLOT_TOKEN_SLOT_A=replace-me-slot-a
+SLOT_TOKEN_SLOT_B=replace-me-slot-b
+SLOT_TOKEN_SLOT_C=replace-me-slot-c

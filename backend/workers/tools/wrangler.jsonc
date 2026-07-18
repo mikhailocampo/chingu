@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "chingu-tools",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+
+  // Shares the D1 database with the dispatch worker. `agent_slot` is the
+  // correlation table; this worker only ever reads it.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "chingu", "database_id": "local-dev-placeholder" }
+  ],
+
+  // Per-slot bearer tokens are SECRETS, not vars. Set with:
+  //   wrangler secret put SLOT_TOKEN_SLOT_A
+  // Locally they come from .dev.vars (see .dev.vars.example).
+
+  "observability": { "enabled": true }
+}

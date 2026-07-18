@@ -1,0 +1,234 @@
+{
+  "timestamp" : "2026-07-18T19:27:37.215041813Z",
+  "hotelPriceCheckRs" : {
+    "version" : "5.0.0",
+    "priceCheckInfo" : {
+      "bookingKey" : "e1294771-c356-49fd-acbf-461ce47ee4ab",
+      "priceChange" : false,
+      "priceDifference" : 0.0,
+      "currencyCode" : "USD",
+      "convertedPriceChange" : false,
+      "convertedPriceDifference" : 0.0,
+      "convertedCurrencyCode" : "USD",
+      "hotelRateInfo" : {
+        "rateInfos" : {
+          "rateInfo" : [ {
+            "checkInDate" : "2026-09-15",
+            "checkOutDate" : "2026-09-18",
+            "amountBeforeTax" : 806.07,
+            "amountAfterTax" : 935.55,
+            "averageNightlyRate" : 311.85,
+            "averageNightlyRateBeforeTax" : 268.69,
+            "highestNightlyRate" : 276.4,
+            "approxTotalPrice" : 935.55,
+            "currencyCode" : "USD",
+            "taxInclusive" : true,
+            "rateSource" : "100",
+            "commission" : {
+              "percent" : 10.0,
+              "type" : "Percentage"
+            }
+          } ],
+          "convertedRateInfo" : [ {
+            "amountBeforeTax" : 806.07,
+            "amountAfterTax" : 935.55,
+            "averageNightlyRate" : 311.85,
+            "averageNightlyRateBeforeTax" : 268.69,
+            "highestNightlyRate" : 276.4,
+            "approxTotalPrice" : 935.55,
+            "currencyCode" : "USD"
+          } ]
+        },
+        "rooms" : [ {
+          "roomIndex" : 1,
+          "nonSmoking" : false,
+          "numberOfAdults" : 1,
+          "bedTypes" : [ {
+            "code" : 3,
+            "description" : "King",
+            "count" : 1
+          } ],
+          "roomDescription" : {
+            "name" : "RESTRICTED CXL",
+            "text" : [ "RESTRICTED CXL STRICTER THAN STANDARD CXL POLICY. SEE TERMS AND CONDITIONS FOR CXL POLICY. 1 KING BED-TUB COMP WIFI- BED WITH ADJUSTABLE FIRMNESS DIAL HI DEF.FLAT SCREEN TV-FRIDGE-POD COFFEE BRWR" ]
+          },
+          "amenities" : [ {
+            "code" : "13",
+            "description" : "Bathtub",
+            "value" : ""
+          }, {
+            "code" : "273",
+            "description" : "Widescreen TV",
+            "value" : ""
+          }, {
+            "code" : "88",
+            "description" : "Refrigerator",
+            "value" : ""
+          } ],
+          "ratePlans" : [ {
+            "ratePlanName" : "RESTRICTED CXL",
+            "ordinal" : 1,
+            "prepaidIndicator" : false,
+            "limitedAvailability" : false,
+            "productCode" : "A01CMK",
+            "rateInfo" : {
+              "checkInDate" : "2026-09-15",
+              "checkOutDate" : "2026-09-18",
+              "amountBeforeTax" : 806.07,
+              "amountAfterTax" : 935.55,
+              "averageNightlyRate" : 311.85,
+              "averageNightlyRateBeforeTax" : 268.69,
+              "currencyCode" : "USD",
+              "taxInclusive" : true,
+              "rates" : [ {
+                "startDate" : "2026-09-15",
+                "endDate" : "2026-09-16",
+                "amountBeforeTax" : 264.22,
+                "currencyCode" : "USD"
+              }, {
+                "startDate" : "2026-09-16",
+                "endDate" : "2026-09-17",
+                "amountBeforeTax" : 265.45,
+                "currencyCode" : "USD"
+              }, {
+                "startDate" : "2026-09-17",
+                "endDate" : "2026-09-18",
+                "amountBeforeTax" : 276.4,
+                "currencyCode" : "USD"
+              } ],
+              "taxes" : {
+                "amount" : 129.48,
+                "currencyCode" : "USD"
+              },
+              "roomExtras" : [ {
+                "code" : "26",
+                "description" : "Cribs",
+                "amount" : 0.0,
+                "currencyCode" : "USD"
+              }, {
+                "code" : "91",
+                "description" : "Rollaway bed",
+                "amount" : 0.0,
+                "currencyCode" : "USD"
+              }, {
+                "code" : "196",
+                "description" : "Extra adult charge",
+                "amount" : 10.0,
+                "currencyCode" : "USD"
+              } ],
+              "cancelPenalties" : [ {
+                "refundable" : true,
+                "deadline" : { }
+              } ],
+              "guarantee" : {
+                "guaranteeType" : "GUAR",
+                "guaranteesAccepted" : [ {
+                  "guaranteeTypeCode" : "5",
+                  "guaranteeTypeDescription" : "Credit card",
+                  "paymentCards" : {
+                    "paymentCard" : [ {
+                      "cardCode" : "AC",
+                      "value" : "AIR CANADA"
+                    }, {
+                      "cardCode" : "AX",
+                      "value" : "AMERICAN EXPRESS"
+                    }, {
+                      "cardCode" : "BA",
+                      "value" : "BANKAMERICARD"
+                    }, {
+                      "cardCode" : "BR",
+                      "value" : "BANCOMER"
+                    }, {
+                      "cardCode" : "BX",
+                      "value" : "BANAMEX CARD"
+                    }, {
+                      "cardCode" : "CA",
+                      "value" : "MASTERCARD"
+                    }, {
+                      "cardCode" : "CB",
+                      "value" : "CARTE BLANCHE"
+                    }, {
+                      "cardCode" : "CX",
+                      "value" : "CHOICE CREDIT CARD"
+                    }, {
+                      "cardCode" : "DC",
+                      "value" : "DINERS CLUB CARD"
+                    }, {
+                      "cardCode" : "DS",
+                      "value" : "DISCOVER CARD"
+                    }, {
+                      "cardCode" : "EC",
+                      "value" : "EUROCARD"
+                    }, {
+                      "cardCode" : "ER",
+                      "value" : "ENROUTE"
+                    }, {
+                      "cardCode" : "IK",
+                      "value" : "MASTER CARD"
+                    }, {
+                      "cardCode" : "JC",
+                      "value" : "JCB CREDIT CARD"
+                    }, {
+                      "cardCode" : "JL",
+                      "value" : "JAPAN AIRLINES"
+                    }, {
+                      "cardCode" : "MC",
+                      "value" : "MASTER CARD"
+                    }, {
+                      "cardCode" : "VI",
+                      "value" : "VISA"
+                    } ]
+                  }
+                } ]
+              }
+            },
+            "convertedRateInfo" : {
+              "amountBeforeTax" : 806.07,
+              "amountAfterTax" : 935.55,
+              "averageNightlyRate" : 311.85,
+              "averageNightlyRateBeforeTax" : 268.69,
+              "currencyCode" : "USD",
+              "taxInclusive" : true,
+              "rates" : [ {
+                "startDate" : "2026-09-15",
+                "endDate" : "2026-09-16",
+                "amountBeforeTax" : 264.22,
+                "currencyCode" : "USD"
+              }, {
+                "startDate" : "2026-09-16",
+                "endDate" : "2026-09-17",
+                "amountBeforeTax" : 265.45,
+                "currencyCode" : "USD"
+              }, {
+                "startDate" : "2026-09-17",
+                "endDate" : "2026-09-18",
+                "amountBeforeTax" : 276.4,
+                "currencyCode" : "USD"
+              } ],
+              "taxes" : {
+                "amount" : 129.48,
+                "currencyCode" : "USD"
+              },
+              "roomExtras" : [ {
+                "code" : "26",
+                "description" : "Cribs",
+                "amount" : 0.0,
+                "currencyCode" : "USD"
+              }, {
+                "code" : "91",
+                "description" : "Rollaway bed",
+                "amount" : 0.0,
+                "currencyCode" : "USD"
+              }, {
+                "code" : "196",
+                "description" : "Extra adult charge",
+                "amount" : 10.0,
+                "currencyCode" : "USD"
+              } ]
+            }
+          } ]
+        } ]
+      }
+    }
+  }
+}

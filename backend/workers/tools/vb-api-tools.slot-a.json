@@ -1,0 +1,88 @@
+[
+  {
+    "id": "1",
+    "name": "get_brief",
+    "description": "Call this FIRST, before saying anything to the caller. It tells you who you are speaking to, what has happened to their travel, and the numbered alternatives available. It takes no inputs. Read the returned 'speak' text as your guide, and refer to the options by their numbers: option 1, option 2, option 3.",
+    "method": "GET",
+    "url": "https://tools.chingu.example/tools/slot-a/get_brief",
+    "auth": { "type": "bearer", "credentials": { "token": "REPLACE_WITH_SLOT_TOKEN_SLOT_A" } },
+    "parameters": [],
+    "timeout": 10,
+    "max_retries": 1,
+    "enabled": true
+  },
+  {
+    "id": "2",
+    "name": "confirm_choice",
+    "description": "Call this once the traveller has clearly chosen one of the numbered alternatives from get_brief. Pass the number they chose as a digit: 1, 2 or 3. Do not invent a code or a letter. Read the returned 'speak' text back to them.",
+    "method": "POST",
+    "url": "https://tools.chingu.example/tools/slot-a/confirm_choice",
+    "auth": { "type": "bearer", "credentials": { "token": "REPLACE_WITH_SLOT_TOKEN_SLOT_A" } },
+    "parameters": [
+      {
+        "name": "choice",
+        "type": "string",
+        "description": "The number of the option the traveller chose, as a digit: 1, 2 or 3.",
+        "required": true,
+        "location": "query"
+      }
+    ],
+    "timeout": 10,
+    "max_retries": 1,
+    "enabled": true
+  },
+  {
+    "id": "3",
+    "name": "confirm_venue",
+    "description": "Only for calls to a restaurant or venue. Call this once the venue has told you whether they can accept the new time. Give the new time as hours and minutes in their local time, for example 20:30. Do not include a date.",
+    "method": "POST",
+    "url": "https://tools.chingu.example/tools/slot-a/confirm_venue",
+    "auth": { "type": "bearer", "credentials": { "token": "REPLACE_WITH_SLOT_TOKEN_SLOT_A" } },
+    "parameters": [
+      {
+        "name": "agreed",
+        "type": "string",
+        "description": "yes if the venue accepted the change, no if they refused.",
+        "required": true,
+        "location": "query"
+      },
+      {
+        "name": "new_time",
+        "type": "string",
+        "description": "The agreed new local time as hours and minutes, for example 20:30. No date.",
+        "required": true,
+        "location": "query"
+      },
+      {
+        "name": "note",
+        "type": "string",
+        "description": "Anything else the venue said that a human should know.",
+        "required": false,
+        "location": "query"
+      }
+    ],
+    "timeout": 15,
+    "max_retries": 1,
+    "enabled": true
+  },
+  {
+    "id": "4",
+    "name": "escalate",
+    "description": "Call this whenever you cannot help: the traveller asks for something outside the numbered options, becomes upset, disputes the facts, or you are unsure. It always succeeds. Then read the returned 'speak' text and end the call politely.",
+    "method": "POST",
+    "url": "https://tools.chingu.example/tools/slot-a/escalate",
+    "auth": { "type": "bearer", "credentials": { "token": "REPLACE_WITH_SLOT_TOKEN_SLOT_A" } },
+    "parameters": [
+      {
+        "name": "reason",
+        "type": "string",
+        "description": "In one sentence, what the traveller needs that you could not do.",
+        "required": true,
+        "location": "query"
+      }
+    ],
+    "timeout": 10,
+    "max_retries": 1,
+    "enabled": true
+  }
+]
