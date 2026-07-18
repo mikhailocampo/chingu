@@ -2,3 +2,4 @@
 node_modules/
 .wrangler/
 seed.local.sql
+fixtures/vb-agent/live/

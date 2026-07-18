@@ -5,7 +5,7 @@
     "description": "Find out who you are speaking to and why. Call this FIRST, before saying anything substantive. Returns the traveller's name, what happened to their flight, and the numbered alternatives to read out. Takes no arguments.",
     "method": "GET",
     "url": "https://REPLACE_WITH_STABLE_HOST/tools/slot-a/get_brief",
-    "auth": { "type": "bearer" },
+    "auth": { "type": "bearer", "credentials": { "token": "REPLACE_WITH_SLOT_TOKEN" } },
     "parameters": []
   },
   {
@@ -14,7 +14,7 @@
     "description": "Book the alternative the traveller picked. Pass the NUMBER they chose, as read out by get_brief. Returns either a confirmation to read back, or a message saying the choice needs their coordinator's sign-off. Do not tell the traveller anything is booked until this says so.",
     "method": "POST",
     "url": "https://REPLACE_WITH_STABLE_HOST/tools/slot-a/confirm_choice",
-    "auth": { "type": "bearer" },
+    "auth": { "type": "bearer", "credentials": { "token": "REPLACE_WITH_SLOT_TOKEN" } },
     "parameters": [
       {
         "name": "choice",
@@ -31,7 +31,7 @@
     "description": "Hand this call to a human. Use when the traveller wants none of the listed options, asks for something outside them, or you are genuinely unsure. Prefer this over improvising.",
     "method": "POST",
     "url": "https://REPLACE_WITH_STABLE_HOST/tools/slot-a/escalate",
-    "auth": { "type": "bearer" },
+    "auth": { "type": "bearer", "credentials": { "token": "REPLACE_WITH_SLOT_TOKEN" } },
     "parameters": [
       {
         "name": "reason",
