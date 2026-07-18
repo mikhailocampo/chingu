@@ -46,6 +46,33 @@ export function localDateParts(iso: string, tz: string) {
 }
 
 /**
+ * Full local wall-clock reading of an instant, as seen in `tz`.
+ *
+ * `activity.starts_at` is stored UTC. The dinner is 2026-09-16T10:30:00Z, which
+ * is 19:30 in Asia/Seoul — reading the stored value out to a Korean restaurant
+ * would announce half past ten in the morning. Every spoken rendering of an
+ * activity time goes through here first.
+ */
+export function localWallClock(iso: string, tz: string) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz,
+    hour12: false,
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit",
+  }).formatToParts(new Date(iso));
+  const get = (t: string) => Number(parts.find((p) => p.type === t)!.value);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const [year, month, day] = [get("year"), get("month"), get("day")];
+  return {
+    year, month, day,
+    hour: get("hour") % 24,
+    minute: get("minute"),
+    /** `YYYY-MM-DD` in `tz`, for `spokenDate`. */
+    date: `${year}-${pad(month)}-${pad(day)}`,
+  };
+}
+
+/**
  * Returns a canonical `...Z` timestamp, or null when the value is unusable.
  * Never guesses: "later", "banana" and "99:99" are refused, not coerced.
  */

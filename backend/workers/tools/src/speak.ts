@@ -62,6 +62,43 @@ export function spokenDate(iso: string | null): string {
   return `${month} ${ordinal(Number(m[3]))}`;
 }
 
+const HOUR_WORDS = [
+  "twelve", "one", "two", "three", "four", "five",
+  "six", "seven", "eight", "nine", "ten", "eleven",
+];
+
+const MINUTE_WORDS = [
+  "", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+  "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+  "seventeen", "eighteen", "nineteen",
+];
+
+const TENS = ["", "", "twenty", "thirty", "forty", "fifty"];
+
+function minuteWords(m: number): string {
+  if (m < 20) return MINUTE_WORDS[m]!;
+  const unit = m % 10;
+  return unit === 0 ? TENS[Math.floor(m / 10)]! : `${TENS[Math.floor(m / 10)]} ${MINUTE_WORDS[unit]}`;
+}
+
+/**
+ * 24h wall clock -> "seven thirty in the evening".
+ *
+ * Spelled out rather than left as digits: this is read aloud, and "19:30" is
+ * exactly the kind of token a TTS voice renders as "nineteen thirty" to a
+ * restaurant that books in twelve-hour time.
+ */
+export function spokenTime(hour: number, minute: number): string {
+  const h = HOUR_WORDS[hour % 12]!;
+  const partOfDay =
+    hour < 12 ? "in the morning" : hour < 17 ? "in the afternoon" : "in the evening";
+  const m =
+    minute === 0 ? "o'clock"
+      : minute < 10 ? `oh ${MINUTE_WORDS[minute]}`
+        : minuteWords(minute);
+  return `${h} ${m} ${partOfDay}`;
+}
+
 export function ordinal(n: number): string {
   const rem100 = n % 100;
   if (rem100 >= 11 && rem100 <= 13) return `${n}th`;

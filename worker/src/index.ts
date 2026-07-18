@@ -13,6 +13,7 @@
 import { DurableObject } from "cloudflare:workers";
 import { assertDialable, NotAllowlisted } from "./allowlist";
 import { disrupt, reset } from "./dev-disrupt";
+import { replay, replayReset } from "./dev-replay";
 import { getRoster } from "./roster";
 import { decideApproval, TransitionError, type Decision } from "./transitions";
 
@@ -356,7 +357,7 @@ export class IngestDO extends DurableObject<Env> {
 /* ------------------------------------------------------------------ Worker */
 
 export default {
-  async fetch(req: Request, env: Env): Promise<Response> {
+  async fetch(req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(req.url);
 
     // Dashboard read. Employee-spined, all 26 — /api/dispatches cannot render
@@ -413,6 +414,23 @@ export default {
       }
       if (url.pathname === "/api/dev/reset" && req.method === "POST") {
         return reset(env);
+      }
+
+      // Simulated travellers. Only emp-us-01 is on a real call; the other three
+      // are walked through DIALING -> IN_CALL -> RESOLVING -> RESOLVED with
+      // captured VB frames replayed into their CallDOs, so the board moves
+      // instead of sitting still while one phone rings. Writes D1 and CallDO
+      // only — it cannot dial. See dev-replay.ts.
+      if (url.pathname === "/api/dev/replay" && req.method === "POST") {
+        // ?sync=1 blocks until the timeline finishes. The demo does NOT use it:
+        // the walk runs under waitUntil so the button returns immediately.
+        // ?speed=N compresses the ~74s timeline by N, for rehearsal.
+        const sync = url.searchParams.get("sync") === "1";
+        const speed = Number(url.searchParams.get("speed") ?? "1");
+        return replay(env, ctx, { sync, speed });
+      }
+      if (url.pathname === "/api/dev/replay/reset" && req.method === "POST") {
+        return replayReset(env);
       }
     }
 

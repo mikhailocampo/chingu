@@ -1,7 +1,9 @@
 import type { Env, Bound } from "./types";
 import {
-  speak, NO_BOOKING, carrierName, airportName, spokenDate, countWord,
+  speak, NO_BOOKING, carrierName, airportName, spokenDate, spokenTime, countWord,
 } from "./speak";
+import { localWallClock } from "./time";
+import { summarise } from "./dietary";
 
 /**
  * GET /tools/:slot/get_brief — zero parameters, by construction.
@@ -10,12 +12,25 @@ import {
  * load-bearing: given no format the model invented `{"choice":"A1"}` out of
  * nothing, so the numbers appear in the spoken text for it to relay rather
  * than generate.
+ *
+ * Two briefs, chosen by the binding rather than by anything the model says: a
+ * traveller brief for CALL_EMPLOYEE (keyed on `impact_id`) and a venue brief
+ * for CALL_VENUE (keyed on `activity_id`). The split mirrors the write half in
+ * confirm-venue.ts, which gates on the same `kind` + `activity_id` pair.
  */
 
 export const MAX_OPTIONS = 3;
 
 export async function getBrief(env: Env, bound: Bound | null): Promise<Response> {
-  if (!bound || !bound.impact_id) return speak(NO_BOOKING, { options: [] });
+  if (!bound) return speak(NO_BOOKING, { options: [] });
+
+  // A venue call carries no impact_id at all, so this must come first.
+  if (bound.kind === "CALL_VENUE" && bound.activity_id) {
+    return venueBrief(env, bound.activity_id);
+  }
+
+  // CALL_NOTIFY, and any binding missing the row it needs, exits speakably.
+  if (!bound.impact_id) return speak(NO_BOOKING, { options: [] });
 
   const brief = await env.DB.prepare(
     `SELECT e.name       AS name,
@@ -62,6 +77,117 @@ export async function getBrief(env: Env, bound: Bound | null): Promise<Response>
     traveller: { name: brief.name, phone: brief.phone },
     options,
   });
+}
+
+/**
+ * The venue half. The agent is on the phone to a restaurant, so it needs the
+ * booking as the restaurant holds it: local time, headcount, and only those
+ * dietary needs it is permitted to disclose.
+ */
+async function venueBrief(env: Env, activityId: string): Promise<Response> {
+  const activity = await env.DB.prepare(
+    `SELECT venue, phone, kind, starts_at, timezone FROM activity WHERE id = ?`,
+  )
+    .bind(activityId)
+    .first<{
+      venue: string; phone: string | null; kind: string;
+      starts_at: string; timezone: string | null;
+    }>();
+
+  if (!activity) return speak(NO_BOOKING, { options: [] });
+
+  const headcount = await env.DB.prepare(
+    `SELECT COUNT(*) AS n FROM attendance
+      WHERE activity_id = ? AND attend_state = 'CONFIRMED'`,
+  )
+    .bind(activityId)
+    .first<{ n: number }>();
+  const confirmed = headcount?.n ?? 0;
+
+  // Names are deliberately not selected. See dietary.ts — there is no code path
+  // from a guest's identity to a medical detail because the identity is never
+  // read in the first place.
+  const dietaryRows = await env.DB.prepare(
+    `SELECT e.dietary_json AS dietary_json
+       FROM attendance a
+       JOIN employee e ON e.id = a.employee_id
+      WHERE a.activity_id = ? AND a.attend_state = 'CONFIRMED'
+        AND e.dietary_json IS NOT NULL
+      ORDER BY a.employee_id`,
+  )
+    .bind(activityId)
+    .all<{ dietary_json: string | null }>();
+
+  const dietary = summarise((dietaryRows.results ?? []).map((r) => r.dietary_json));
+
+  const tz = activity.timezone ?? "UTC";
+  const local = localWallClock(activity.starts_at, tz);
+  const when = {
+    date: spokenDate(local.date),
+    time: spokenTime(local.hour, local.minute),
+  };
+
+  return speak(venueSentence(activity, when, confirmed, dietary), {
+    venue: { name: activity.venue, phone: activity.phone },
+    booking: { date: when.date, time: when.time, timezone: tz },
+    headcount: confirmed,
+    dietary: { disclosable: dietary.phrases, withheld: dietary.withheld },
+    options: [],
+  });
+}
+
+function venueSentence(
+  a: { venue: string; kind: string },
+  when: { date: string; time: string },
+  confirmed: number,
+  dietary: { phrases: string[]; withheld: number; severe: boolean },
+): string {
+  const meal = a.kind === "DINNER" ? "dinner" : "group";
+  const parts = [`You're calling ${a.venue} about the ${meal} booking.`];
+
+  // A missing date would leave a dangling "on at"; both halves are guarded.
+  const at = [when.date && `on ${when.date}`, when.time && `at ${when.time}`]
+    .filter(Boolean)
+    .join(" ");
+  // `countWord(0)` is "no", which would read as "for no people" — the zero case
+  // gets its own sentence instead, because it means "unknown", not "empty".
+  const who = confirmed === 0
+    ? ""
+    : `, for ${countWord(confirmed)} ${confirmed === 1 ? "person" : "people"}`;
+
+  parts.push(
+    at ? `The booking is currently ${at}${who}.` : `I have the booking${who}.`,
+  );
+
+  if (confirmed === 0) {
+    parts.push("I don't have a confirmed headcount for it yet, so don't quote them a number.");
+  }
+
+  if (dietary.phrases.length > 0) {
+    parts.push(...dietary.phrases.map((p) => `${p}.`));
+    if (dietary.severe) {
+      parts.push("Treat the severe allergy as a strict requirement, not a preference.");
+    }
+  }
+
+  if (dietary.withheld > 0) {
+    // What they are is not said, and must not be: the count is the whole point.
+    parts.push(
+      "Some guests have further dietary needs I'm not able to share with the restaurant.",
+      "Ask in general terms whether the kitchen can accommodate additional requirements, and I'll have a colleague follow up on the details.",
+    );
+  } else if (dietary.phrases.length === 0) {
+    parts.push("No dietary needs have been recorded for this booking.");
+  }
+
+  parts.push(
+    dietary.phrases.length > 0
+      ? "Ask whether the kitchen can accommodate those needs, and whether the booking can be moved to a different time."
+      : "Ask whether the booking can be moved to a different time.",
+    "If they agree to a new time, tell me the new time in hours and minutes.",
+  );
+
+  return parts.join(" ");
 }
 
 function briefSentence(
