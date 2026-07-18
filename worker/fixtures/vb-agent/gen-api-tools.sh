@@ -62,18 +62,18 @@ for slot in slot-a slot-b slot-c; do
   {
     "id": "get_brief",
     "name": "get_brief",
-    "description": "Find out who you are speaking to and why. Call this FIRST, before saying anything substantive. Returns the traveller's name, what happened to their flight, and the numbered alternatives to read out. Takes no arguments.",
-    "method": "GET",
     "url": "$HOST/tools/$slot/get_brief",
+    "method": "GET",
+    "description": "Find out who you are speaking to and why. Call this FIRST, before saying anything substantive. Returns the traveller's name, what happened to their flight, and the numbered alternatives to read out. Takes no arguments.",
     "auth": { "type": "bearer", "credentials": { "token": "$token" } },
     "parameters": []
   },
   {
     "id": "confirm_choice",
     "name": "confirm_choice",
-    "description": "Book the alternative the traveller picked. Pass the NUMBER they chose, as read out by get_brief. Returns either a confirmation to read back, or a message saying the choice needs their coordinator's sign-off. Do not tell the traveller anything is booked until this says so.",
-    "method": "POST",
     "url": "$HOST/tools/$slot/confirm_choice",
+    "method": "POST",
+    "description": "Book the alternative the traveller picked. Pass the NUMBER they chose, as read out by get_brief. Returns either a confirmation to read back, or a message saying the choice needs their coordinator's sign-off. Do not tell the traveller anything is booked until this says so.",
     "auth": { "type": "bearer", "credentials": { "token": "$token" } },
     "parameters": [
       {
@@ -81,19 +81,19 @@ for slot in slot-a slot-b slot-c; do
         "type": "string",
         "description": "The option number the traveller chose, as they said it. A digit or a word both work: 1, \"1\", or \"one\".",
         "required": true,
-        "location": "body"
+        "location": "query"
       }
     ]
   },
   {
     "id": "escalate",
     "name": "escalate",
-    "description": "Hand this call to a human. Use when the traveller wants none of the listed options, asks for something outside them, or you are genuinely unsure. Prefer this over improvising.",
-    "method": "POST",
     "url": "$HOST/tools/$slot/escalate",
+    "method": "POST",
+    "description": "Hand this call to a human. Use when the traveller wants none of the listed options, asks for something outside them, or you are genuinely unsure. Prefer this over improvising.",
     "auth": { "type": "bearer", "credentials": { "token": "$token" } },
     "parameters": [
-      { "name": "reason", "type": "string", "description": "One short sentence on why a human is needed.", "required": true, "location": "body" }
+      { "name": "reason", "type": "string", "description": "One short sentence on why a human is needed.", "required": true, "location": "query" }
     ]
   }
 ]
@@ -105,38 +105,51 @@ JSON
   {
     "id": "get_brief",
     "name": "get_brief",
-    "description": "Find out which venue you are calling and what needs to change. Call this FIRST, before saying anything substantive. Returns the venue, the current booking time in the venue's own timezone, the headcount, and any dietary needs you are permitted to disclose. Takes no arguments.",
-    "method": "GET",
     "url": "$HOST/tools/$slot/get_brief",
+    "method": "GET",
+    "description": "Find out which venue you are calling and what needs to change. Call this FIRST, before saying anything substantive. Returns the venue, the current booking time in the venue's own timezone, the headcount, and any dietary needs you are permitted to disclose. Takes no arguments.",
     "auth": { "type": "bearer", "credentials": { "token": "$token" } },
     "parameters": []
   },
   {
     "id": "confirm_venue",
     "name": "confirm_venue",
-    "description": "Record the outcome of the venue call. Call this once the venue has clearly agreed or declined. Do not tell anyone the booking is changed until this confirms it.",
-    "method": "POST",
     "url": "$HOST/tools/$slot/confirm_venue",
+    "method": "POST",
+    "description": "Record the outcome of the venue call. Call this once the venue has clearly agreed or declined. Do not tell anyone the booking is changed until this confirms it.",
     "auth": { "type": "bearer", "credentials": { "token": "$token" } },
     "parameters": [
-      { "name": "agreed", "type": "boolean", "description": "True if the venue agreed to the change.", "required": true, "location": "body" },
-      { "name": "new_time", "type": "string", "description": "The agreed new time in hours and minutes, e.g. \"8:15 pm\". Omit if the time did not change.", "required": false, "location": "body" },
-      { "name": "note", "type": "string", "description": "One short sentence for the dashboard log.", "required": false, "location": "body" }
+      { "name": "agreed", "type": "boolean", "description": "True if the venue agreed to the change.", "required": true, "location": "query" },
+      { "name": "new_time", "type": "string", "description": "The agreed new time in hours and minutes, e.g. \"8:15 pm\". Omit if the time did not change.", "required": false, "location": "query" },
+      { "name": "note", "type": "string", "description": "One short sentence for the dashboard log.", "required": false, "location": "query" }
     ]
   },
   {
     "id": "escalate",
     "name": "escalate",
-    "description": "Hand this call to a human. Use when the venue asks for something you cannot agree to, raises money, or you are genuinely unsure.",
-    "method": "POST",
     "url": "$HOST/tools/$slot/escalate",
+    "method": "POST",
+    "description": "Hand this call to a human. Use when the venue asks for something you cannot agree to, raises money, or you are genuinely unsure.",
     "auth": { "type": "bearer", "credentials": { "token": "$token" } },
     "parameters": [
-      { "name": "reason", "type": "string", "description": "One short sentence on why a human is needed.", "required": true, "location": "body" }
+      { "name": "reason", "type": "string", "description": "One short sentence on why a human is needed.", "required": true, "location": "query" }
     ]
   }
 ]
 JSON
+done
+
+# Fail loudly if the emitted order ever regresses — VB corrupts silently, so
+# this is the only place the mistake is still cheap to catch.
+for f in "$OUT"/*.json; do
+  python3 - "$f" <<'CHECK'
+import json,sys
+p=sys.argv[1]
+for t in json.load(open(p)):
+    k=list(t)
+    assert k.index("auth") > k.index("method"), f"{p}: auth must come after url/method (VB parser is order-sensitive)"
+    assert len(t["auth"]["credentials"]["token"]) > 20, f"{p}: token looks wrong"
+CHECK
 done
 
 echo "wrote $(ls "$OUT" | wc -l | tr -d ' ') files to $OUT for $HOST"
