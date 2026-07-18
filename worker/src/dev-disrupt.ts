@@ -262,6 +262,23 @@ export async function reset(env: Env): Promise<Response> {
     ).bind(EVENT_ID),
     env.DB.prepare(`DELETE FROM disruption_impact WHERE event_id = ?`).bind(EVENT_ID),
     env.DB.prepare(`DELETE FROM disruption_event WHERE id = ?`).bind(EVENT_ID),
+
+    // Free any slot bound to a dispatch we just deleted.
+    //
+    // Without this, reset leaves a DANGLING BINDING: agent_slot still points at
+    // a dispatch row that no longer exists, so the next get_brief resolves to a
+    // ghost. agent_slot is authoritative for resolution (schema.sql:244), so a
+    // stale row there is not cosmetic — it is the agent being told to talk to
+    // someone who isn't there.
+    //
+    // status and lease move together: the CHECK at schema.sql:253 only permits
+    // a NULL lease when the slot is FREE.
+    env.DB.prepare(
+      `UPDATE agent_slot
+          SET status = 'FREE', dispatch_id = NULL, bound_at = NULL, lease_expires_at = NULL
+        WHERE dispatch_id IS NOT NULL
+          AND dispatch_id NOT IN (SELECT id FROM dispatch)`,
+    ),
   ]);
 
   return Response.json({ ok: true, reset: EVENT_ID });

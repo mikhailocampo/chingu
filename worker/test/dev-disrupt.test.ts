@@ -230,3 +230,59 @@ describe("response payload", () => {
     expect(res.status).toBe(409);
   });
 });
+
+describe("REGRESSION: reset must not leave a dangling slot binding", () => {
+  // Found live. reset deleted the dispatch rows but never freed agent_slot, so
+  // the slot still pointed at a dispatch that no longer existed. agent_slot is
+  // authoritative for resolution (schema.sql:244), so the next get_brief would
+  // have resolved to a ghost — the agent being told to talk to someone who
+  // isn't there.
+  test("a slot bound to a deleted dispatch is freed", async () => {
+    await run();
+    const impactId = impactIdFor("emp-us-01");
+    await env.DB.batch([
+      env.DB.prepare(
+        `INSERT INTO dispatch (id, kind, impact_id, employee_id, slot, idempotency_key, status, created_at)
+         VALUES ('dsp-x','CALL_EMPLOYEE',?,'emp-us-01','slot-a','k-x','QUEUED',?)`,
+      ).bind(impactId, NOW.toISOString()),
+      env.DB.prepare(
+        `UPDATE agent_slot SET status='BOUND', dispatch_id='dsp-x', bound_at=?, lease_expires_at=?
+          WHERE slot='slot-a'`,
+      ).bind(NOW.toISOString(), "2026-12-31T00:00:00Z"),
+    ]);
+
+    await reset(env as any);
+
+    const slot = await env.DB.prepare(
+      `SELECT status, dispatch_id, lease_expires_at FROM agent_slot WHERE slot='slot-a'`,
+    ).first<{ status: string; dispatch_id: string | null; lease_expires_at: string | null }>();
+
+    expect(slot!.status).toBe("FREE");
+    expect(slot!.dispatch_id).toBeNull();
+    // schema.sql:253 only permits a NULL lease when FREE — they move together.
+    expect(slot!.lease_expires_at).toBeNull();
+  });
+
+  test("a slot bound to a LIVE dispatch is left alone", async () => {
+    await run();
+    // A venue call has no impact_id, so reset must not disturb it.
+    await env.DB.batch([
+      env.DB.prepare(
+        `INSERT INTO dispatch (id, kind, activity_id, slot, idempotency_key, status, created_at)
+         VALUES ('dsp-venue','CALL_VENUE','act-dinner','slot-b','k-v','IN_CALL',?)`,
+      ).bind(NOW.toISOString()),
+      env.DB.prepare(
+        `UPDATE agent_slot SET status='BOUND', dispatch_id='dsp-venue', bound_at=?, lease_expires_at=?
+          WHERE slot='slot-b'`,
+      ).bind(NOW.toISOString(), "2026-12-31T00:00:00Z"),
+    ]);
+
+    await reset(env as any);
+
+    const slot = await env.DB.prepare(
+      `SELECT status, dispatch_id FROM agent_slot WHERE slot='slot-b'`,
+    ).first<{ status: string; dispatch_id: string | null }>();
+    expect(slot!.status).toBe("BOUND");
+    expect(slot!.dispatch_id).toBe("dsp-venue");
+  });
+});
