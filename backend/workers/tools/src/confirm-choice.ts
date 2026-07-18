@@ -216,8 +216,22 @@ async function writeReissue(
     if (!isUniqueViolation(err)) throw err;
   }
 
-  await env.DB.prepare(`UPDATE disruption_impact SET selected_offer_id = ? WHERE id = ?`)
-    .bind(offer.id, impactId)
+  // EXECUTING, not just selected_offer_id.
+  //
+  // Commit 7dd6ba5 added this state describing exactly this moment: the
+  // traveller has chosen and an `action` row is pending, which is distinct from
+  // "ticket reissued". Nothing wrote it, so a dashboard polling state could not
+  // tell the two apart and a card sat at CONTACTING -> CALLING forever, looking
+  // like the agent was still on the phone after the call had ended.
+  await env.DB.prepare(
+    `UPDATE disruption_impact
+        SET previous_state = state,
+            state = 'EXECUTING',
+            state_changed_at = ?,
+            selected_offer_id = ?
+      WHERE id = ?`,
+  )
+    .bind(now.toISOString(), offer.id, impactId)
     .run();
 
   return speak(

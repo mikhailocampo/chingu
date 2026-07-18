@@ -16,6 +16,7 @@ import { disrupt, reset } from "./dev-disrupt";
 import { replay, replayReset } from "./dev-replay";
 import { getRoster } from "./roster";
 import { placeCall, releaseCall } from "./dev-call";
+import { drainActions } from "./actions";
 import { decideApproval, TransitionError, type Decision } from "./transitions";
 
 export interface Env {
@@ -55,6 +56,27 @@ const VB_BASE = "https://vocalbridgeai.com";
  * v1 has no session layer, so this is the seeded coordinator (Hyejin Cho).
  */
 const OPERATOR_ID = "op-coord";
+
+/**
+ * Advance a dispatch in BOTH places, D1 first.
+ *
+ * D1 is the truth the dashboard reads; CallDO's copy is display-only for the
+ * live stream. The consumer used to call only CallDO.setStatus, so
+ * dispatch.status sat at QUEUED forever and the roster could never render a
+ * call actually happening — the card fell back to its impact state and looked
+ * stuck. One writer, one truth, and the truth is D1.
+ */
+async function advance(env: Env, dispatchId: string, status: string) {
+  await env.DB.prepare(
+    `UPDATE dispatch SET status = ?,
+            resolved_at = CASE WHEN ? IN ('RESOLVED','FAILED','NO_ANSWER')
+                               THEN ? ELSE resolved_at END
+      WHERE id = ?`,
+  )
+    .bind(status, status, new Date().toISOString(), dispatchId)
+    .run();
+  await env.CALL.getByName(dispatchId).setStatus(status);
+}
 
 /* ------------------------------------------------------------------ CallDO */
 
@@ -368,6 +390,13 @@ export default {
       return getRoster(env, eventId);
     }
 
+    // Terminal write: execute pending work and close the impact out. Without
+    // this nothing ever reaches RESOLVED and every booked card reads "Booking"
+    // forever. Not dev-gated — this is the real executor seam, simulated in v1.
+    if (url.pathname === "/api/actions/drain" && req.method === "POST") {
+      return drainActions(env, new Date());
+    }
+
     // Close an approval. The ONLY thing in the codebase that can — the voice
     // agent opens the gate and never closes it.
     if (url.pathname.startsWith("/api/approval/") && url.pathname.endsWith("/decide")) {
@@ -488,7 +517,7 @@ export default {
         // refused dispatch never claims to have dialed.
         assertDialable(job.phone, env);
 
-        await call.setStatus("DIALING");
+        await advance(env, job.dispatchId, "DIALING");
 
         const res = await fetch(`${VB_BASE}/api/v1/calls`, {
           method: "POST",
@@ -506,6 +535,10 @@ export default {
 
         // No session_id here -- only room_name. That is the join key.
         const { room_name } = (await res.json()) as { room_name: string };
+        await env.DB.prepare(`UPDATE dispatch SET room_name = ? WHERE id = ?`)
+          .bind(room_name, job.dispatchId)
+          .run();
+        await advance(env, job.dispatchId, "IN_CALL");
         await env.INGEST.getByName("singleton").bind(room_name, job.dispatchId);
 
         msg.ack();
@@ -519,7 +552,7 @@ export default {
         // Retrying it would burn the DLQ budget re-deciding the same "no", and
         // three more attempts is three more chances to get the guard wrong.
         if (err instanceof NotAllowlisted) {
-          await env.CALL.getByName(job.dispatchId).setStatus("FAILED");
+          await advance(env, job.dispatchId, "FAILED");
           msg.ack();
           continue;
         }

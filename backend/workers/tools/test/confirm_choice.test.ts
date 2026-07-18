@@ -266,3 +266,39 @@ describe("POST /tools/:slot/confirm_choice", () => {
     expect(JSON.stringify(res.json).length).toBeLessThan(1024);
   });
 });
+
+describe("REGRESSION: an in-policy booking moves the impact to EXECUTING", () => {
+  // Commit 7dd6ba5 added EXECUTING for exactly this moment — chosen, action
+  // pending, not yet reissued — and nothing wrote it. After a REAL call
+  // completed, the card sat at CONTACTING and rendered CALLING forever, looking
+  // like the agent was still on the phone. Found by driving it, not by review.
+  test("state becomes EXECUTING and the chosen offer is recorded", async () => {
+    const ids = await scenarioElena(ctx.db, "slot-a");
+
+    await call(ctx, "POST", "/tools/slot-a/confirm_choice", { body: { choice: 1 } });
+
+    const row = await ctx.db
+      .prepare(`SELECT state, previous_state, selected_offer_id FROM disruption_impact WHERE id = ?`)
+      .bind(ids.impact)
+      .first<{ state: string; previous_state: string | null; selected_offer_id: string | null }>();
+
+    expect(row!.state).toBe("EXECUTING");
+    expect(row!.selected_offer_id).not.toBeNull();
+    // The transition is traceable, so a dashboard can show where it came from.
+    expect(row!.previous_state).not.toBe("EXECUTING");
+  });
+
+  test("an over-policy choice still parks at AWAITING_APPROVAL, not EXECUTING", async () => {
+    // The gate must keep winning. Nothing executes above policy.
+    // Option 3 in this scenario is the NEEDS_APPROVAL one.
+    const ids = await scenarioElena(ctx.db, "slot-a");
+
+    await call(ctx, "POST", "/tools/slot-a/confirm_choice", { body: { choice: 3 } });
+
+    const state = await ctx.db
+      .prepare(`SELECT state FROM disruption_impact WHERE id = ?`)
+      .bind(ids.impact)
+      .first<{ state: string }>();
+    expect(state!.state).toBe("AWAITING_APPROVAL");
+  });
+});
