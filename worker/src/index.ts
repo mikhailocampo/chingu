@@ -11,6 +11,7 @@
  * returns it, and every debug event carries the same string in `session_id`.
  */
 import { DurableObject } from "cloudflare:workers";
+import { assertDialable, NotAllowlisted } from "./allowlist";
 
 export interface Env {
   INGEST: DurableObjectNamespace<IngestDO>;
@@ -19,6 +20,8 @@ export interface Env {
   DISPATCH_Q: Queue<DispatchJob>;
   VB_API_KEY: string;
   VB_AGENT_ID: string;
+  /** Comma-separated E.164 numbers we are permitted to dial. See allowlist.ts. */
+  DIAL_ALLOWLIST?: string;
 }
 
 interface DispatchJob {
@@ -383,6 +386,13 @@ export default {
       try {
         const call = env.CALL.getByName(job.dispatchId);
         await call.init(job.dispatchId, job.employeeId, job.directive);
+
+        // Deny-by-default before anything reaches the PSTN. seed.sql ships 16
+        // Korean numbers in a NON-reserved range; a fan-out against seed data
+        // would phone real strangers. Checked before setStatus("DIALING") so a
+        // refused dispatch never claims to have dialed.
+        assertDialable(job.phone, env);
+
         await call.setStatus("DIALING");
 
         const res = await fetch(`${VB_BASE}/api/v1/calls`, {
@@ -409,6 +419,16 @@ export default {
           message: String(err),
           attempt: msg.attempts,
         });
+
+        // An allowlist refusal is a permanent decision, not a transient fault.
+        // Retrying it would burn the DLQ budget re-deciding the same "no", and
+        // three more attempts is three more chances to get the guard wrong.
+        if (err instanceof NotAllowlisted) {
+          await env.CALL.getByName(job.dispatchId).setStatus("FAILED");
+          msg.ack();
+          continue;
+        }
+
         msg.retry({ delaySeconds: 5 * msg.attempts });
       }
     }

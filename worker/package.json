@@ -2,6 +2,6 @@
   "name": "chingu-dispatch",
   "private": true,
   "type": "module",
-  "scripts": { "dev": "wrangler dev", "deploy": "wrangler deploy" },
-  "devDependencies": { "wrangler": "^4.56.0", "@cloudflare/workers-types": "^4.20250109.0", "typescript": "^5.7.0" }
+  "scripts": { "test": "bun test", "dev": "wrangler dev", "deploy": "wrangler deploy" },
+  "devDependencies": { "wrangler": "^4.56.0", "@cloudflare/workers-types": "^4.20250109.0", "typescript": "^5.7.0", "@types/bun": "latest" }
 }
