@@ -168,9 +168,12 @@ CREATE TABLE disruption_impact (
   event_id             TEXT NOT NULL REFERENCES disruption_event(id),
   employee_id          TEXT NOT NULL REFERENCES employee(id),
   itinerary_id         TEXT REFERENCES itinerary(id),
+  -- EXECUTING = the traveller has chosen and an `action` row is pending.
+  -- Without it there is no state between "chose an option" and "ticket
+  -- reissued", so a dashboard polling state alone cannot tell the two apart.
   state                TEXT NOT NULL DEFAULT 'DETECTED'
                        CHECK (state IN ('DETECTED','TRIAGING','AWAITING_APPROVAL',
-                                        'CONTACTING','RESOLVED','FAILED')),
+                                        'CONTACTING','EXECUTING','RESOLVED','FAILED')),
   previous_state       TEXT,
   state_changed_at     TEXT,
   matched_segment_id   TEXT REFERENCES segment(id),
@@ -203,7 +206,10 @@ CREATE TABLE offer (
   policy_reason      TEXT,
   raw_json           TEXT
 );
-CREATE INDEX idx_offer_impact ON offer(impact_id, rank);
+-- UNIQUE so `rank` is a real ordering. NOTE: rank is a priority, not the number
+-- spoken aloud — callers renumber by position, so ranks 1/3/5 are read out as
+-- "1, 2, 3". Do not assume it is dense.
+CREATE UNIQUE INDEX idx_offer_impact ON offer(impact_id, rank);
 
 -- Human in the loop. Approval is on the PLAN, before the call.
 CREATE TABLE approval (
@@ -235,9 +241,17 @@ CREATE TABLE agent_slot (
   slot              TEXT PRIMARY KEY,        -- 'slot-a', 'slot-b', ...
   vb_agent_id       TEXT NOT NULL,
   status            TEXT NOT NULL DEFAULT 'FREE' CHECK (status IN ('FREE','BOUND')),
+  -- AUTHORITATIVE for slot->dispatch resolution. `dispatch.slot` is the
+  -- historical record of which slot a dispatch used; this is the live binding.
+  -- Never resolve a tool call through dispatch.slot.
+  -- Deliberately NO foreign key: dispatch.slot already references agent_slot,
+  -- so an FK here would be circular and neither row could be inserted first.
   dispatch_id       TEXT,
   bound_at          TEXT,
-  lease_expires_at  TEXT                     -- reaper frees orphaned slots
+  -- NULL lease is treated as UNBOUND by the resolver, so a binding that forgets
+  -- to set one is a silent no-op. Enforce it instead.
+  lease_expires_at  TEXT,                    -- reaper frees orphaned slots
+  CHECK (status = 'FREE' OR lease_expires_at IS NOT NULL)
 );
 
 CREATE TABLE dispatch (
@@ -270,9 +284,13 @@ CREATE INDEX idx_dispatch_status ON dispatch(status);
 -- Everything with an external side effect that is NOT a VB call.
 CREATE TABLE action (
   id               TEXT PRIMARY KEY,
+  -- ESCALATE is here so an escalation is visible to anything polling `action`.
+  -- Without it, escalating shows up only as AWAITING_APPROVAL + an approval
+  -- row, and a worker draining `action` never sees that a human is needed.
   kind             TEXT NOT NULL
                    CHECK (kind IN ('RESHOP','REISSUE','HOTEL_MODIFY',
-                                   'VENUE_CHANGE','NOTIFY_EMAIL','NOTIFY_SMS')),
+                                   'VENUE_CHANGE','NOTIFY_EMAIL','NOTIFY_SMS',
+                                   'ESCALATE')),
   subject_type     TEXT NOT NULL,            -- 'impact' | 'activity' | 'employee'
   subject_id       TEXT NOT NULL,
   employee_id      TEXT REFERENCES employee(id),

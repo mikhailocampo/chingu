@@ -12,6 +12,17 @@
 
 Reference, not a migration. See `SABRE_LEARNINGS.md` for the verified API facts this rests on.
 
+## Schema changelog
+
+**2026-07-18 — post-implementation pass.** Four gaps surfaced by building against the schema, all fixed in `worker/schema.sql`:
+
+- **`disruption_impact.state` gained `EXECUTING`.** There was no state between *"the traveller chose an option"* and *"the ticket is reissued"* — implementations were left parking on `CONTACTING` with `selected_offer_id` set, so a dashboard polling state alone could not distinguish the two.
+- **`action.kind` gained `ESCALATE`.** Escalation previously showed up only as `AWAITING_APPROVAL` plus an `approval` row, making it **invisible to anything draining `action`** — a worker looking for work would never learn a human was needed.
+- **`offer(impact_id, rank)` is now UNIQUE.** `rank` is a priority, *not* the number spoken aloud: callers renumber by position, so ranks 1/3/5 are read out as "1, 2, 3". Do not assume it is dense.
+- **`agent_slot` now enforces `status = 'FREE' OR lease_expires_at IS NOT NULL`.** The resolver treats a NULL lease as unbound, so a binding that forgot to set one was a silent no-op — the slot looked taken and resolved to nothing.
+
+**One change was attempted and reverted:** a foreign key on `agent_slot.dispatch_id → dispatch(id)`. `dispatch.slot` already references `agent_slot`, so the pair is circular and neither row can be inserted first — 24 tests failed on `FOREIGN KEY constraint failed`. The omission is deliberate, and now commented as such. `agent_slot.dispatch_id` is authoritative for live resolution; `dispatch.slot` is the historical record. **Never resolve a tool call through `dispatch.slot`.**
+
 ## The one rule
 
 **Sabre is the system of record for itineraries. We are the index and the workflow.**
