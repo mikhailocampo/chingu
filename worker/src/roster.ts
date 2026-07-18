@@ -127,9 +127,22 @@ export async function getRoster(env: Env, eventId: string): Promise<Response> {
        LEFT JOIN segment fs
          ON fs.itinerary_id = fi.id AND fs.type = 'FLIGHT'
 
+       -- Most relevant impact: a live one if there is one, otherwise the most
+       -- recently resolved.
+       --
+       -- This used to filter out RESOLVED outright, which meant a resolved
+       -- traveller lost their impact, their offer, and therefore their
+       -- advisory — the "Resolved today" band rendered as a row of nameless
+       -- cards with nothing to say. That band is the receipt: "Rebooked to
+       -- OZ223, +$120, in policy." Dropping it threw away the evidence the
+       -- agent did the work.
        LEFT JOIN disruption_impact imp
-         ON imp.employee_id = e.id
-        AND imp.state <> 'RESOLVED'
+         ON imp.id = (
+              SELECT id FROM disruption_impact i2
+               WHERE i2.employee_id = e.id
+               ORDER BY CASE WHEN i2.state = 'RESOLVED' THEN 1 ELSE 0 END,
+                        i2.state_changed_at DESC
+               LIMIT 1)
        LEFT JOIN disruption_event de
          ON de.id = imp.event_id        -- NB: disruption_event, not event
 
@@ -189,7 +202,7 @@ function toCard(r: Row): RosterCard {
     name: r.name,
     homeBase: r.home_base,
     status,
-    band: bandFor(status),
+    band: bandFor(status, r.impact_id !== null),
     advisory: composeAdvisory(r, status),
     policyVerdict: r.best_verdict,
     totalDelta: r.best_total,
@@ -215,6 +228,19 @@ function toCard(r: Row): RosterCard {
  */
 export function composeAdvisory(r: Row, status: DisplayStatus): string | null {
   if (status === "GREEN") return null;
+
+  // The receipt. "Resolved today" is where the coordinator sees that the agent
+  // actually did the work, so a resolved card must say what it booked and what
+  // it cost — not render as a nameless box.
+  if (status === "RESOLVED" && r.best_route) {
+    const money =
+      r.best_total && r.best_total !== "0.00"
+        ? ` ${fmtMoney(r.best_total, r.best_currency)}`
+        : " at no extra cost";
+    const how =
+      r.best_verdict === "PASS" ? ", in policy, agent acted alone." : ", authorised by you.";
+    return `Rebooked to ${r.best_route}.${money}${how}`;
+  }
 
   // Disrupted: explain what broke, then what to do about it.
   if (r.impact_id && r.dsr_carrier && r.dsr_flight_no !== null) {

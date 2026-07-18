@@ -58,7 +58,13 @@ export type DisplayStatus =
   | "RESOLVED";
 
 /** Roster bands, in the order they appear on screen. */
-export type Band = "NEEDS_YOU" | "FAILED" | "WORKING" | "RESOLVED" | "ON_TRACK";
+export type Band =
+  | "NEEDS_YOU"
+  | "FAILED"
+  | "WORKING"
+  | "AT_RISK"
+  | "RESOLVED"
+  | "ON_TRACK";
 
 export interface StatusInput {
   employeeStatus: EmployeeStatus;
@@ -117,16 +123,29 @@ export function deriveStatus(input: StatusInput): DisplayStatus {
   }
 }
 
-/** Which band a card sorts into. Drives the six sections of the roster. */
-export function bandFor(status: DisplayStatus): Band {
+/**
+ * Which band a card sorts into.
+ *
+ * `hasImpact` splits the two very different things AT_RISK means:
+ *
+ *   with an impact row    — the agent is triaging them right now  -> WORKING
+ *   without an impact row — structural risk, nobody is on it      -> AT_RISK
+ *
+ * Grace Lombardi (lands past the cut-off) and Nora Feldman (no booking) have
+ * no impact row, so filing them under "Agent working" tells the coordinator
+ * something is being done when nothing is. On a calm board those two are the
+ * only non-green cards, which makes it exactly the wrong thing to get wrong.
+ */
+export function bandFor(status: DisplayStatus, hasImpact = true): Band {
   switch (status) {
     case "NEEDS_YOU":
       return "NEEDS_YOU";
     case "FAILED":
       return "FAILED";
+    case "AT_RISK":
+      return hasImpact ? "WORKING" : "AT_RISK";
     case "CALLING":
     case "BOOKING":
-    case "AT_RISK":
       return "WORKING";
     case "RESOLVED":
       return "RESOLVED";

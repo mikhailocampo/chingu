@@ -1,21 +1,41 @@
-import { Button } from "@/components/ui/button"
+/**
+ * Two routes, so no router dependency. `/admin` is the only branch, and the
+ * roster deliberately opens detail in an overlay rather than a route — that
+ * costs nothing now and keeps the v2 voice path open, where navigating away
+ * would tear down a live call.
+ */
+import { useEffect, useState } from "react"
+
+import { AdminPage } from "@/pages/admin-page"
+import { RosterPage } from "@/pages/roster-page"
 
 export function App() {
-  return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
-  )
+  const [path, setPath] = useState(() => window.location.pathname)
+
+  useEffect(() => {
+    const onPop = () => setPath(window.location.pathname)
+    window.addEventListener("popstate", onPop)
+
+    // Intercept same-origin link clicks so the two pages swap without a reload.
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey) return
+      const anchor = (e.target as HTMLElement | null)?.closest("a")
+      if (!anchor) return
+      const href = anchor.getAttribute("href")
+      if (!href?.startsWith("/")) return
+      e.preventDefault()
+      window.history.pushState({}, "", href)
+      setPath(href)
+    }
+    document.addEventListener("click", onClick)
+
+    return () => {
+      window.removeEventListener("popstate", onPop)
+      document.removeEventListener("click", onClick)
+    }
+  }, [])
+
+  return path.startsWith("/admin") ? <AdminPage /> : <RosterPage />
 }
 
 export default App

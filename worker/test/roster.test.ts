@@ -302,3 +302,81 @@ describe("REGRESSION: a parked card describes what is actually parked", () => {
     expect(daniel.totalDelta).toBe("120.00");
   });
 });
+
+describe("REGRESSION: structural risk is not 'Agent working'", () => {
+  // Reported by the frontend build. bandFor sent every AT_RISK card to WORKING,
+  // so on a CALM board Grace and Nora — the only two non-green cards — sat
+  // under "Agent working" while no agent was working on them. Telling the
+  // coordinator something is in hand when nothing is, on the screen she looks
+  // at 95% of the time.
+  test("Grace and Nora sit in AT_RISK, not WORKING, on a calm board", async () => {
+    const { cards } = await roster();
+    for (const id of ["emp-us-07", "emp-us-10"]) {
+      const c = byId(cards, id);
+      expect(c.status).toBe("AT_RISK");
+      expect(c.impactId).toBeNull();
+      expect(c.band, `${c.name} has no impact row — nobody is working on them`).toBe("AT_RISK");
+    }
+  });
+
+  test("a calm board puts nothing in the Agent working band", async () => {
+    const { cards } = await roster();
+    expect(cards.filter((c: RosterCard) => c.band === "WORKING")).toHaveLength(0);
+  });
+
+  test("but a triaged traveller IS agent-working", async () => {
+    await disrupt(env as any, NOW);
+    const elena = byId((await roster()).cards, "emp-us-04");
+    expect(elena.status).toBe("AT_RISK");
+    expect(elena.impactId).not.toBeNull();
+    expect(elena.band).toBe("WORKING");
+  });
+});
+
+describe("REGRESSION: a resolved card is a receipt, not a blank", () => {
+  // Also from the frontend build. The query filtered `imp.state <> 'RESOLVED'`,
+  // so a resolved traveller lost their impact, their offer and their advisory.
+  // "Resolved today" is the band that shows the agent actually did the work;
+  // rendering it as nameless boxes threw away the evidence.
+  beforeEach(async () => {
+    await disrupt(env as any, NOW);
+    const impactId = impactIdFor("emp-us-03"); // Marcus Bell
+    await env.DB.prepare(
+      `UPDATE disruption_impact
+          SET state='RESOLVED', selected_offer_id=?, state_changed_at=?
+        WHERE id=?`,
+    )
+      .bind(`ofr-${impactId}-1`, NOW.toISOString(), impactId)
+      .run();
+  });
+
+  test("the advisory says what was booked and what it cost", async () => {
+    const marcus = byId((await roster()).cards, "emp-us-03");
+    expect(marcus.status).toBe("RESOLVED");
+    expect(marcus.band).toBe("RESOLVED");
+    expect(marcus.advisory).toContain("Rebooked to");
+    expect(marcus.advisory).toContain("Asiana 223");
+    expect(marcus.advisory).toContain("$120.00");
+  });
+
+  test("it records whether the agent acted alone or a human authorised it", async () => {
+    const marcus = byId((await roster()).cards, "emp-us-03");
+    // The $120 option was PASS, so the agent booked it unaided.
+    expect(marcus.advisory).toContain("agent acted alone");
+  });
+
+  test("a live impact still outranks a resolved one", async () => {
+    // Marcus gets a second, live impact — the card must follow that, not the
+    // stale resolved one.
+    await env.DB.prepare(
+      `INSERT INTO disruption_impact (id, event_id, employee_id, state, state_changed_at)
+       VALUES ('imp-live', 'dsr-ke82-20260914', 'emp-us-03', 'AWAITING_APPROVAL', ?)`,
+    )
+      .bind("2026-09-13T19:00:00Z")
+      .run();
+
+    const marcus = byId((await roster()).cards, "emp-us-03");
+    expect(marcus.status).toBe("NEEDS_YOU");
+    expect(marcus.impactId).toBe("imp-live");
+  });
+});
