@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "sabre-tools": {
+      "type": "http",
+      "url": "https://mcp.cert.sabre.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${SABRE_API_KEY}"
+      }
+    },
+    "sabre-skills": {
+      "type": "http",
+      "url": "https://mcp2.cert.sabre.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${SABRE_API_KEY}"
+      }
+    },
+    "sabre-docs": {
+      "type": "http",
+      "url": "https://developer.mcp.cert.sabre.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${SABRE_API_KEY}"
+      }
+    }
+  }
+}

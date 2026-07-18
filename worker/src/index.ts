@@ -1,0 +1,416 @@
+/**
+ * Chingu dispatch worker.
+ *
+ * Data flow, all of it verified against live VocalBridge behaviour:
+ *
+ *   disruption -> D1 query -> Queue -> consumer -> POST /api/v1/calls
+ *                                                       |
+ *   VB debug WS (ONE per agent) -> IngestDO -> demux -> CallDO -> SSE -> browser
+ *
+ * The join between a dispatch and its live events is `room_name`: the call API
+ * returns it, and every debug event carries the same string in `session_id`.
+ */
+import { DurableObject } from "cloudflare:workers";
+
+export interface Env {
+  INGEST: DurableObjectNamespace<IngestDO>;
+  CALL: DurableObjectNamespace<CallDO>;
+  DB: D1Database;
+  DISPATCH_Q: Queue<DispatchJob>;
+  VB_API_KEY: string;
+  VB_AGENT_ID: string;
+}
+
+interface DispatchJob {
+  dispatchId: string;
+  employeeId: string;
+  phone: string;
+  directive: string;
+}
+
+/** A debug frame as VB actually sends it (shape captured from a live call). */
+interface VBFrame {
+  type: "connected" | "debug_event";
+  event_type?: string;
+  data?: Record<string, unknown>;
+  timestamp?: string;
+  session_id?: string;
+}
+
+const VB_BASE = "https://vocalbridgeai.com";
+
+/* ------------------------------------------------------------------ CallDO */
+
+/**
+ * One per dispatch. Append-only event log plus SSE fan-out.
+ *
+ * Named by dispatchId, not by session, so the object exists from the moment
+ * work is enqueued -- the agent screen is openable before VB knows anything.
+ */
+export class CallDO extends DurableObject<Env> {
+  private clients = new Set<WritableStreamDefaultWriter>();
+
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    this.ctx.storage.sql.exec(`
+      CREATE TABLE IF NOT EXISTS events (
+        seq        INTEGER PRIMARY KEY AUTOINCREMENT,
+        kind       TEXT NOT NULL,
+        payload    TEXT NOT NULL,
+        vb_ts      TEXT,
+        created_at INTEGER NOT NULL
+      )
+    `);
+    this.ctx.storage.sql.exec(`
+      CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT NOT NULL)
+    `);
+  }
+
+  private getMeta(k: string): string | null {
+    const r = this.ctx.storage.sql
+      .exec<{ v: string }>("SELECT v FROM meta WHERE k = ?", k)
+      .toArray();
+    return r.length ? r[0].v : null;
+  }
+
+  private setMeta(k: string, v: string) {
+    this.ctx.storage.sql.exec(
+      "INSERT INTO meta (k, v) VALUES (?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v",
+      k,
+      v,
+    );
+  }
+
+  /** Called by the queue consumer once the dispatch row exists. */
+  async init(dispatchId: string, employeeId: string, directive: string) {
+    this.setMeta("dispatch_id", dispatchId);
+    this.setMeta("employee_id", employeeId);
+    this.setMeta("directive", directive);
+    if (!this.getMeta("status")) this.setMeta("status", "QUEUED");
+    return { ok: true };
+  }
+
+  async setStatus(status: string) {
+    this.setMeta("status", status);
+    await this.append("status", { status });
+  }
+
+  async getStatus() {
+    return {
+      dispatchId: this.getMeta("dispatch_id"),
+      status: this.getMeta("status"),
+      roomName: this.getMeta("room_name"),
+      lastSeq: this.lastSeq(),
+    };
+  }
+
+  private lastSeq(): number {
+    const r = this.ctx.storage.sql
+      .exec<{ s: number | null }>("SELECT MAX(seq) AS s FROM events")
+      .toArray();
+    return r[0]?.s ?? 0;
+  }
+
+  /**
+   * Append one event and push it to every attached SSE client.
+   *
+   * seq is assigned by SQLite, not derived from VB's timestamp: tool_call and
+   * tool_result routinely share a millisecond, and VB's clock is not ours.
+   */
+  async append(kind: string, payload: unknown, vbTs?: string) {
+    const row = this.ctx.storage.sql
+      .exec<{ seq: number }>(
+        "INSERT INTO events (kind, payload, vb_ts, created_at) VALUES (?, ?, ?, ?) RETURNING seq",
+        kind,
+        JSON.stringify(payload),
+        vbTs ?? null,
+        Date.now(),
+      )
+      .one();
+
+    const frame = this.sse(row.seq, kind, payload, vbTs);
+    await this.broadcast(frame);
+    return row.seq;
+  }
+
+  private sse(seq: number, kind: string, payload: unknown, vbTs?: string) {
+    const body = JSON.stringify({ seq, kind, payload, vb_ts: vbTs ?? null });
+    return `id: ${seq}\nevent: ${kind}\ndata: ${body}\n\n`;
+  }
+
+  private async broadcast(text: string) {
+    const enc = new TextEncoder().encode(text);
+    const dead: WritableStreamDefaultWriter[] = [];
+    for (const w of this.clients) {
+      try {
+        await w.write(enc);
+      } catch {
+        dead.push(w);
+      }
+    }
+    for (const w of dead) this.clients.delete(w);
+  }
+
+  async fetch(req: Request): Promise<Response> {
+    const url = new URL(req.url);
+    if (url.pathname.endsWith("/stream")) return this.stream(req, url);
+    return new Response("not found", { status: 404 });
+  }
+
+  /**
+   * SSE egress. Resume is native: the browser replays Last-Event-ID on
+   * reconnect, so we backfill everything after that cursor and then go live.
+   * A dispatcher opening the screen mid-call gets the full history, not just
+   * whatever happens after they connected.
+   */
+  private stream(req: Request, url: URL): Response {
+    const hdr = req.headers.get("Last-Event-ID") ?? url.searchParams.get("cursor");
+    const cursor = hdr ? parseInt(hdr, 10) : 0;
+
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter();
+    const enc = new TextEncoder();
+
+    const backlog = this.ctx.storage.sql
+      .exec<{ seq: number; kind: string; payload: string; vb_ts: string | null }>(
+        "SELECT seq, kind, payload, vb_ts FROM events WHERE seq > ? ORDER BY seq",
+        Number.isFinite(cursor) ? cursor : 0,
+      )
+      .toArray();
+
+    (async () => {
+      try {
+        await writer.write(enc.encode(": connected\n\n"));
+        for (const e of backlog) {
+          await writer.write(
+            enc.encode(this.sse(e.seq, e.kind, JSON.parse(e.payload), e.vb_ts ?? undefined)),
+          );
+        }
+        this.clients.add(writer);
+      } catch {
+        /* client vanished before backfill finished */
+      }
+    })();
+
+    return new Response(readable, {
+      headers: {
+        "content-type": "text/event-stream",
+        "cache-control": "no-cache",
+        connection: "keep-alive",
+        "access-control-allow-origin": "*",
+      },
+    });
+  }
+}
+
+/* ---------------------------------------------------------------- IngestDO */
+
+/**
+ * Singleton. Holds ONE WebSocket to the agent-scoped VB debug stream and fans
+ * events out to the right CallDO by room_name.
+ *
+ * Two facts drive the design, both measured:
+ *  - the debug token is minted per AGENT and expires in 3600s
+ *  - an outbound WS only keeps a DO alive for 15 minutes, and VB sends no
+ *    application-level keepalive while idle
+ * so the alarm below is load-bearing, not decoration.
+ */
+export class IngestDO extends DurableObject<Env> {
+  private ws: WebSocket | null = null;
+  private connectedAt = 0;
+
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    this.ctx.storage.sql.exec(`
+      CREATE TABLE IF NOT EXISTS routes (
+        room_name   TEXT PRIMARY KEY,
+        dispatch_id TEXT NOT NULL,
+        bound_at    INTEGER NOT NULL
+      )
+    `);
+  }
+
+  /** Bind a room_name to a dispatch. Called the instant the call API returns. */
+  async bind(roomName: string, dispatchId: string) {
+    this.ctx.storage.sql.exec(
+      "INSERT INTO routes (room_name, dispatch_id, bound_at) VALUES (?, ?, ?) " +
+        "ON CONFLICT(room_name) DO UPDATE SET dispatch_id = excluded.dispatch_id",
+      roomName,
+      dispatchId,
+      Date.now(),
+    );
+    await this.ensureConnected();
+    return { ok: true };
+  }
+
+  private route(roomName: string): string | null {
+    const r = this.ctx.storage.sql
+      .exec<{ dispatch_id: string }>(
+        "SELECT dispatch_id FROM routes WHERE room_name = ?",
+        roomName,
+      )
+      .toArray();
+    return r.length ? r[0].dispatch_id : null;
+  }
+
+  async ensureConnected() {
+    // Reconnect if never connected, dropped, or approaching the 15-minute cap
+    // at which an outbound WS stops holding this object in memory.
+    const stale = Date.now() - this.connectedAt > 10 * 60 * 1000;
+    if (this.ws && !stale) {
+      await this.ctx.storage.setAlarm(Date.now() + 30_000);
+      return;
+    }
+    await this.connect();
+    await this.ctx.storage.setAlarm(Date.now() + 30_000);
+  }
+
+  private async connect() {
+    try {
+      this.ws?.close();
+    } catch {
+      /* already gone */
+    }
+    this.ws = null;
+
+    const tokRes = await fetch(`${VB_BASE}/api/v1/debug/token`, {
+      method: "POST",
+      headers: {
+        "X-API-Key": this.env.VB_API_KEY,
+        "X-Agent-Id": this.env.VB_AGENT_ID,
+        "content-type": "application/json",
+      },
+      body: "{}",
+    });
+    if (!tokRes.ok) throw new Error(`debug token ${tokRes.status}`);
+    const { ws_url } = (await tokRes.json()) as { ws_url: string };
+
+    const res = await fetch(ws_url, { headers: { Upgrade: "websocket" } });
+    const ws = res.webSocket;
+    if (!ws) throw new Error(`no websocket in upgrade response (${res.status})`);
+    ws.accept();
+
+    ws.addEventListener("message", (ev) => {
+      void this.onFrame(String(ev.data));
+    });
+    ws.addEventListener("close", () => {
+      this.ws = null;
+    });
+    ws.addEventListener("error", () => {
+      this.ws = null;
+    });
+
+    this.ws = ws;
+    this.connectedAt = Date.now();
+  }
+
+  /** Demux one VB frame to its CallDO. */
+  private async onFrame(raw: string) {
+    let f: VBFrame;
+    try {
+      f = JSON.parse(raw);
+    } catch {
+      return;
+    }
+    if (f.type !== "debug_event" || !f.session_id) return;
+
+    // session_id IS the room_name -- verified live, this is the whole join.
+    const dispatchId = this.route(f.session_id);
+    if (!dispatchId) return; // event for a call we did not start
+
+    const stub = this.env.CALL.getByName(dispatchId);
+    await stub.append(f.event_type ?? "unknown", f.data ?? {}, f.timestamp);
+
+    if (f.event_type === "session_started") await stub.setStatus("IN_CALL");
+    if (f.event_type === "session_ended") await stub.setStatus("RESOLVING");
+  }
+
+  /**
+   * Watchdog. Idempotent by construction: reconnect only when the socket is
+   * missing or old. Alarms do not repeat, so re-arm every time.
+   */
+  async alarm() {
+    const open = this.ctx.storage.sql
+      .exec<{ n: number }>("SELECT COUNT(*) AS n FROM routes")
+      .one().n;
+    if (open === 0) return; // nothing in flight: let the object go idle
+    await this.ensureConnected();
+  }
+}
+
+/* ------------------------------------------------------------------ Worker */
+
+export default {
+  async fetch(req: Request, env: Env): Promise<Response> {
+    const url = new URL(req.url);
+
+    // Agent screen: live event stream for one dispatch.
+    if (url.pathname.startsWith("/api/dispatch/") && url.pathname.endsWith("/stream")) {
+      const id = url.pathname.split("/")[3];
+      return env.CALL.getByName(id).fetch(req);
+    }
+
+    // Dashboard: status only, no streaming.
+    if (url.pathname.startsWith("/api/dispatch/")) {
+      const id = url.pathname.split("/")[3];
+      return Response.json(await env.CALL.getByName(id).getStatus());
+    }
+
+    // Test seam: inject a frame exactly as VB would send it.
+    if (url.pathname === "/api/test/emit" && req.method === "POST") {
+      const body = (await req.json()) as {
+        dispatchId: string;
+        kind: string;
+        payload: unknown;
+      };
+      const seq = await env.CALL.getByName(body.dispatchId).append(body.kind, body.payload);
+      return Response.json({ seq });
+    }
+
+    if (url.pathname === "/api/test/init" && req.method === "POST") {
+      const b = (await req.json()) as { dispatchId: string; employeeId: string; directive: string };
+      await env.CALL.getByName(b.dispatchId).init(b.dispatchId, b.employeeId, b.directive);
+      return Response.json({ ok: true });
+    }
+
+    return new Response("chingu dispatch worker", { status: 200 });
+  },
+
+  /** Fan-out consumer. Concurrency is capped in wrangler.jsonc, not here. */
+  async queue(batch: MessageBatch<DispatchJob>, env: Env) {
+    for (const msg of batch.messages) {
+      const job = msg.body;
+      try {
+        const call = env.CALL.getByName(job.dispatchId);
+        await call.init(job.dispatchId, job.employeeId, job.directive);
+        await call.setStatus("DIALING");
+
+        const res = await fetch(`${VB_BASE}/api/v1/calls`, {
+          method: "POST",
+          headers: {
+            "X-API-Key": env.VB_API_KEY,
+            "X-Agent-Id": env.VB_AGENT_ID,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            phone_number: job.phone,
+            participant_name: job.employeeId,
+          }),
+        });
+        if (!res.ok) throw new Error(`calls ${res.status}: ${await res.text()}`);
+
+        // No session_id here -- only room_name. That is the join key.
+        const { room_name } = (await res.json()) as { room_name: string };
+        await env.INGEST.getByName("singleton").bind(room_name, job.dispatchId);
+
+        msg.ack();
+      } catch (err) {
+        await env.CALL.getByName(job.dispatchId).append("error", {
+          message: String(err),
+          attempt: msg.attempts,
+        });
+        msg.retry({ delaySeconds: 5 * msg.attempts });
+      }
+    }
+  },
+};

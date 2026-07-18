@@ -1,0 +1,27 @@
+# deps
+node_modules/
+.venv/
+
+# secrets — .dev.vars holds the Sabre bearer token. NEVER commit.
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.env
+.env.*
+!.env.example
+
+# cloudflare
+.wrangler/
+dist/
+build/
+.open-next/
+
+# os / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# local scratch
+*.log
+tool-results/

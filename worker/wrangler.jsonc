@@ -1,0 +1,48 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "chingu-dispatch",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "durable_objects": {
+    "bindings": [
+      { "name": "INGEST", "class_name": "IngestDO" },
+      { "name": "CALL", "class_name": "CallDO" }
+    ]
+  },
+
+  // SQLite backend: seq comes free via INTEGER PRIMARY KEY AUTOINCREMENT,
+  // and it is the only backend available on the Workers Free plan.
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["IngestDO", "CallDO"]
+    }
+  ],
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "chingu",
+      "database_id": "local-dev-placeholder"
+    }
+  ],
+
+  "queues": {
+    "producers": [{ "queue": "dispatch-queue", "binding": "DISPATCH_Q" }],
+    "consumers": [
+      {
+        "queue": "dispatch-queue",
+        // The single knob that absorbs VB concurrency behaviour.
+        // Measured: VB runs >=3 simultaneous sessions per agent, so this can go up.
+        "max_concurrency": 3,
+        "max_batch_size": 1,
+        "max_retries": 3,
+        "dead_letter_queue": "dispatch-dlq"
+      }
+    ]
+  },
+
+  "observability": { "enabled": true }
+}
