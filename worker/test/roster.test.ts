@@ -252,3 +252,53 @@ describe("query hygiene", () => {
     expect((await res.json()).cards).toHaveLength(0);
   });
 });
+
+describe("REGRESSION: a parked card describes what is actually parked", () => {
+  // Found by driving it live, not by the suite. The advisory read the
+  // top-ranked offer unconditionally, so a card parked on the $200 option
+  // rendered "NEEDS_YOU" above a description of the $120 in-policy option and
+  // the words "the agent may book it alone" — misdescribing the very charge the
+  // coordinator was about to authorise. The earlier tests hid it by deleting
+  // rank 1 to force the scenario.
+  beforeEach(async () => {
+    await disrupt(env as any, NOW);
+    const impactId = impactIdFor("emp-us-04");
+    const parked = `ofr-${impactId}-2`; // $200, NEEDS_APPROVAL — NOT rank 1
+    await env.DB.batch([
+      env.DB.prepare(
+        `UPDATE disruption_impact SET state='AWAITING_APPROVAL', selected_offer_id=? WHERE id=?`,
+      ).bind(parked, impactId),
+      env.DB.prepare(
+        `INSERT INTO approval (id, impact_id, offer_id, reason, requested_at)
+         VALUES ('apr-parked', ?, ?, 'OVER_THRESHOLD', ?)`,
+      ).bind(impactId, parked, NOW.toISOString()),
+    ]);
+  });
+
+  test("the advisory describes the parked offer, not the top-ranked one", async () => {
+    const elena = byId((await roster()).cards, "emp-us-04");
+    expect(elena.advisory).toContain("Cathay Pacific"); // the $200 option
+    expect(elena.advisory).toContain("$200.00");
+    expect(elena.advisory).not.toContain("Asiana"); // rank 1, NOT what is parked
+  });
+
+  test("it does not claim the agent may act alone on a gated option", async () => {
+    const elena = byId((await roster()).cards, "emp-us-04");
+    expect(elena.advisory).not.toContain("may book it alone");
+    expect(elena.policyVerdict).toBe("NEEDS_APPROVAL");
+    expect(elena.totalDelta).toBe("200.00");
+  });
+
+  test("a card that needs approval can actually be approved", async () => {
+    const elena = byId((await roster()).cards, "emp-us-04");
+    expect(elena.status).toBe("NEEDS_YOU");
+    expect(elena.approvalId).toBe("apr-parked");
+    expect(elena.canApprove).toBe(true);
+  });
+
+  test("an unparked card still falls back to the top-ranked offer", async () => {
+    const daniel = byId((await roster()).cards, "emp-us-01");
+    expect(daniel.advisory).toContain("Asiana 223");
+    expect(daniel.totalDelta).toBe("120.00");
+  });
+});

@@ -142,11 +142,23 @@ export async function getRoster(env: Env, eventId: string): Promise<Response> {
        LEFT JOIN approval apr
          ON apr.impact_id = imp.id AND apr.decided_at IS NULL
 
-       -- Top-ranked offer. MIN(rank), never rank = 1: rank is a priority and
-       -- is not guaranteed dense (schema.sql:209).
+       -- The offer the card is ABOUT.
+       --
+       -- Once an impact is parked, that is whatever was selected — not the
+       -- top-ranked one. Getting this wrong produces a card that reads
+       -- "NEEDS_YOU" above an advisory describing a cheaper in-policy option
+       -- and the words "the agent may book it alone", which is worse than
+       -- useless: it misdescribes what the coordinator is about to authorise.
+       --
+       -- Otherwise fall back to the top-ranked offer. MIN(rank), never
+       -- rank = 1: rank is a priority and is not guaranteed dense
+       -- (schema.sql:209).
        LEFT JOIN offer o
          ON o.impact_id = imp.id
-        AND o.rank = (SELECT MIN(rank) FROM offer o3 WHERE o3.impact_id = imp.id)
+        AND o.id = COALESCE(
+              imp.selected_offer_id,
+              (SELECT id FROM offer o3 WHERE o3.impact_id = imp.id
+                ORDER BY o3.rank LIMIT 1))
 
       WHERE e.org_id = ev.org_id
       ORDER BY e.name`,

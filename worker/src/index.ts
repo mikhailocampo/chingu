@@ -14,6 +14,7 @@ import { DurableObject } from "cloudflare:workers";
 import { assertDialable, NotAllowlisted } from "./allowlist";
 import { disrupt, reset } from "./dev-disrupt";
 import { getRoster } from "./roster";
+import { decideApproval, TransitionError, type Decision } from "./transitions";
 
 export interface Env {
   INGEST: DurableObjectNamespace<IngestDO>;
@@ -45,6 +46,13 @@ interface VBFrame {
 }
 
 const VB_BASE = "https://vocalbridgeai.com";
+
+/**
+ * Who approvals are attributed to. Resolved server-side and never accepted from
+ * a request body: `approval.decided_by` is the audit trail for a real charge.
+ * v1 has no session layer, so this is the seeded coordinator (Hyejin Cho).
+ */
+const OPERATOR_ID = "op-coord";
 
 /* ------------------------------------------------------------------ CallDO */
 
@@ -356,6 +364,43 @@ export default {
     if (url.pathname === "/api/roster" && req.method === "GET") {
       const eventId = url.searchParams.get("event_id") ?? "evt-busan";
       return getRoster(env, eventId);
+    }
+
+    // Close an approval. The ONLY thing in the codebase that can — the voice
+    // agent opens the gate and never closes it.
+    if (url.pathname.startsWith("/api/approval/") && url.pathname.endsWith("/decide")) {
+      if (req.method !== "POST") return new Response("method not allowed", { status: 405 });
+      const approvalId = url.pathname.split("/")[3];
+      const body = (await req.json().catch(() => ({}))) as {
+        decision?: Decision;
+        offerId?: string | null;
+        note?: string | null;
+      };
+      if (body.decision !== "APPROVED" && body.decision !== "REJECTED") {
+        return Response.json({ error: "decision must be APPROVED or REJECTED" }, { status: 400 });
+      }
+      try {
+        const result = await decideApproval(
+          env,
+          {
+            approvalId,
+            decision: body.decision,
+            offerId: body.offerId ?? null,
+            note: body.note ?? null,
+            // Server-side, deliberately. A browser-supplied decided_by is fake
+            // accountability — this row is the audit trail for a real charge.
+            // v1 has no auth layer, so it is a constant rather than a session.
+            decidedBy: OPERATOR_ID,
+          },
+          new Date(),
+        );
+        return Response.json({ ok: true, ...result });
+      } catch (err) {
+        if (err instanceof TransitionError) {
+          return Response.json({ error: err.message, code: err.code }, { status: err.status });
+        }
+        throw err;
+      }
     }
 
     // Demo seams. Gated: a test seam that ships is how demos get embarrassing.
