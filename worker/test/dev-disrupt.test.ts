@@ -336,3 +336,62 @@ describe("REGRESSION: reset survives an approved impact", () => {
     expect(await scalar<number>(env, `SELECT COUNT(*) FROM disruption_impact`)).toBe(0);
   });
 });
+
+describe("REGRESSION: the auto-dispatch path actually executes", () => {
+  // A refactor deleted enqueueRealCall and every test still passed, because
+  // auto-dispatch is guarded on env.DISPATCH_Q and the harness boots D1 only.
+  // The guard that keeps the suite fast also made it blind: the route 500'd
+  // live with "ReferenceError: enqueueRealCall is not defined".
+  //
+  // So this test supplies a stub queue and drives the real branch.
+  test("an allowlisted traveller is queued and their slot is bound", async () => {
+    const sent: any[] = [];
+    const envQ = {
+      ...env,
+      DISPATCH_Q: { send: async (m: any) => void sent.push(m) },
+      DIAL_ALLOWLIST: "+14084383154",
+    };
+    await env.DB.prepare(`UPDATE employee SET phone_e164='+14084383154' WHERE id='emp-us-01'`).run();
+
+    await disrupt(envQ as any, NOW, null, true);
+
+    expect(sent).toHaveLength(1);
+    expect(sent[0].employeeId).toBe("emp-us-01");
+    expect(sent[0].phone).toBe("+14084383154");
+
+    const slot = await env.DB.prepare(
+      `SELECT status, dispatch_id, lease_expires_at FROM agent_slot WHERE slot='slot-a'`,
+    ).first<{ status: string; dispatch_id: string; lease_expires_at: string }>();
+    // Bound BEFORE the phone rings, or get_brief resolves to nothing.
+    expect(slot!.status).toBe("BOUND");
+    expect(slot!.dispatch_id).toContain("emp-us-01");
+    expect(slot!.lease_expires_at).not.toBeNull();
+
+    expect(
+      await scalar<string>(env, `SELECT state FROM disruption_impact WHERE employee_id='emp-us-01'`),
+    ).toBe("CONTACTING");
+  });
+
+  test("a non-allowlisted traveller is never queued", async () => {
+    const sent: any[] = [];
+    const envQ = {
+      ...env,
+      DISPATCH_Q: { send: async (m: any) => void sent.push(m) },
+      DIAL_ALLOWLIST: "+14084383154", // nobody in the seed has this
+    };
+
+    await disrupt(envQ as any, NOW, null, true);
+
+    // seed.sql ships 16 Korean numbers in a NON-reserved range. "Dial everyone
+    // whose option is in policy" must never reach them.
+    for (const m of sent) expect(m.phone).toBe("+14084383154");
+    expect(sent.filter((m) => m.employeeId !== "emp-us-01")).toHaveLength(0);
+  });
+
+  test("autoDispatch=false leaves the queue untouched", async () => {
+    const sent: any[] = [];
+    const envQ = { ...env, DISPATCH_Q: { send: async (m: any) => void sent.push(m) } };
+    await disrupt(envQ as any, NOW, null, false);
+    expect(sent).toHaveLength(0);
+  });
+});

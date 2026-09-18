@@ -1,0 +1,1090 @@
+{
+  "emp-kr-01": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-01-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR01",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-01-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-02": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-02-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR02",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-02-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-03": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-03-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR03",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-03-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-04": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-04-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR04",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-04-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-05": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-05-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR05",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-05-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-06": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-06-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR06",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-06-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-07": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-07-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR07",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-07-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-08": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-08-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR08",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-08-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-09": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-09-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR09",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-09-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-10": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-10-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR10",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-10-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-11": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-11-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR11",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-11-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-12": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-12-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR12",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-12-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-13": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-13-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR13",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-13-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-14": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-14-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR14",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-14-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-15": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-15-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR15",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-15-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-kr-16": {
+    "itineraries": [
+      {
+        "id": "itin-emp-kr-16-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEKR16",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-kr-16-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-us-01": {
+    "itineraries": [
+      {
+        "id": "itin-us-01-f",
+        "component": "FLIGHT",
+        "pnr": "FAKE01",
+        "ticketNumber": "1800000000001",
+        "status": "TICKETED",
+        "segments": [
+          {
+            "id": "seg-us-01",
+            "type": "FLIGHT",
+            "carrier": "KE",
+            "flightNo": 82,
+            "operatingCarrier": "KE",
+            "operatingFlightNo": 82,
+            "origin": "JFK",
+            "dest": "ICN",
+            "depAt": "2026-09-14T17:10:00Z",
+            "arrAt": "2026-09-15T08:50:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      },
+      {
+        "id": "itin-emp-us-01-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEUS01",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-us-01-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-us-02": {
+    "itineraries": [
+      {
+        "id": "itin-us-02-f",
+        "component": "FLIGHT",
+        "pnr": "FAKE02",
+        "ticketNumber": "1800000000002",
+        "status": "TICKETED",
+        "segments": [
+          {
+            "id": "seg-us-02",
+            "type": "FLIGHT",
+            "carrier": "KE",
+            "flightNo": 82,
+            "operatingCarrier": "KE",
+            "operatingFlightNo": 82,
+            "origin": "JFK",
+            "dest": "ICN",
+            "depAt": "2026-09-14T17:10:00Z",
+            "arrAt": "2026-09-15T08:50:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      },
+      {
+        "id": "itin-emp-us-02-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEUS02",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-us-02-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-us-03": {
+    "itineraries": [
+      {
+        "id": "itin-us-03-f",
+        "component": "FLIGHT",
+        "pnr": "FAKE03",
+        "ticketNumber": "1800000000003",
+        "status": "TICKETED",
+        "segments": [
+          {
+            "id": "seg-us-03",
+            "type": "FLIGHT",
+            "carrier": "KE",
+            "flightNo": 82,
+            "operatingCarrier": "KE",
+            "operatingFlightNo": 82,
+            "origin": "JFK",
+            "dest": "ICN",
+            "depAt": "2026-09-14T17:10:00Z",
+            "arrAt": "2026-09-15T08:50:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      },
+      {
+        "id": "itin-emp-us-03-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEUS03",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-us-03-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-us-04": {
+    "itineraries": [
+      {
+        "id": "itin-us-04-f",
+        "component": "FLIGHT",
+        "pnr": "FAKE04",
+        "ticketNumber": "1800000000004",
+        "status": "TICKETED",
+        "segments": [
+          {
+            "id": "seg-us-04",
+            "type": "FLIGHT",
+            "carrier": "DL",
+            "flightNo": 7842,
+            "operatingCarrier": "KE",
+            "operatingFlightNo": 82,
+            "origin": "JFK",
+            "dest": "ICN",
+            "depAt": "2026-09-14T17:10:00Z",
+            "arrAt": "2026-09-15T08:50:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      },
+      {
+        "id": "itin-emp-us-04-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEUS04",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-us-04-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-us-05": {
+    "itineraries": [
+      {
+        "id": "itin-us-05-f",
+        "component": "FLIGHT",
+        "pnr": "FAKE05",
+        "ticketNumber": "1800000000005",
+        "status": "TICKETED",
+        "segments": [
+          {
+            "id": "seg-us-05",
+            "type": "FLIGHT",
+            "carrier": "OZ",
+            "flightNo": 223,
+            "operatingCarrier": "OZ",
+            "operatingFlightNo": 223,
+            "origin": "JFK",
+            "dest": "ICN",
+            "depAt": "2026-09-14T05:30:00Z",
+            "arrAt": "2026-09-14T21:05:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      },
+      {
+        "id": "itin-emp-us-05-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEUS05",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-us-05-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-us-06": {
+    "itineraries": [
+      {
+        "id": "itin-us-06-f",
+        "component": "FLIGHT",
+        "pnr": "FAKE06",
+        "ticketNumber": "1800000000006",
+        "status": "TICKETED",
+        "segments": [
+          {
+            "id": "seg-us-06",
+            "type": "FLIGHT",
+            "carrier": "DL",
+            "flightNo": 7861,
+            "operatingCarrier": "KE",
+            "operatingFlightNo": 24,
+            "origin": "SFO",
+            "dest": "ICN",
+            "depAt": "2026-09-14T19:50:00Z",
+            "arrAt": "2026-09-15T08:20:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      },
+      {
+        "id": "itin-emp-us-06-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEUS06",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-us-06-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-us-07": {
+    "itineraries": [
+      {
+        "id": "itin-us-07-f",
+        "component": "FLIGHT",
+        "pnr": "FAKE07",
+        "ticketNumber": "1800000000007",
+        "status": "TICKETED",
+        "segments": [
+          {
+            "id": "seg-us-07",
+            "type": "FLIGHT",
+            "carrier": "UA",
+            "flightNo": 805,
+            "operatingCarrier": "UA",
+            "operatingFlightNo": 805,
+            "origin": "SFO",
+            "dest": "ICN",
+            "depAt": "2026-09-15T06:45:00Z",
+            "arrAt": "2026-09-15T19:20:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      },
+      {
+        "id": "itin-emp-us-07-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEUS07",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-us-07-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-us-08": {
+    "itineraries": [
+      {
+        "id": "itin-us-08-f",
+        "component": "FLIGHT",
+        "pnr": "FAKE08",
+        "ticketNumber": "1800000000008",
+        "status": "TICKETED",
+        "segments": [
+          {
+            "id": "seg-us-08",
+            "type": "FLIGHT",
+            "carrier": "YP",
+            "flightNo": 112,
+            "operatingCarrier": "YP",
+            "operatingFlightNo": 112,
+            "origin": "SFO",
+            "dest": "ICN",
+            "depAt": "2026-09-15T00:00:00Z",
+            "arrAt": "2026-09-15T12:40:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      },
+      {
+        "id": "itin-emp-us-08-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEUS08",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-us-08-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-us-09": {
+    "itineraries": [
+      {
+        "id": "itin-us-09-f",
+        "component": "FLIGHT",
+        "pnr": "FAKE09",
+        "ticketNumber": "1800000000009",
+        "status": "TICKETED",
+        "segments": [
+          {
+            "id": "seg-us-09",
+            "type": "FLIGHT",
+            "carrier": "YP",
+            "flightNo": 112,
+            "operatingCarrier": "YP",
+            "operatingFlightNo": 112,
+            "origin": "SFO",
+            "dest": "ICN",
+            "depAt": "2026-09-15T00:00:00Z",
+            "arrAt": "2026-09-15T12:40:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      },
+      {
+        "id": "itin-emp-us-09-h",
+        "component": "HOTEL",
+        "pnr": "HFAKEUS09",
+        "ticketNumber": null,
+        "status": "CONFIRMED",
+        "segments": [
+          {
+            "id": "seg-emp-us-09-h",
+            "type": "HOTEL",
+            "propertyName": "Park Hyatt Busan",
+            "propertyPhone": "+82-51-990-1234",
+            "checkIn": "2026-09-15",
+            "checkOut": "2026-09-18",
+            "freeCancelUntil": "2026-09-11T15:00:00Z",
+            "status": "CONFIRMED"
+          }
+        ]
+      }
+    ],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  },
+  "emp-us-10": {
+    "itineraries": [],
+    "activities": [
+      {
+        "id": "act-dinner",
+        "kind": "DINNER",
+        "venue": "Jagalchi Hoetjip",
+        "address": "52 Jagalchi-ro, Jung-gu, Busan",
+        "phone": "+82-51-245-2723",
+        "startsAt": "2026-09-16T10:30:00Z",
+        "timezone": "Asia/Seoul"
+      }
+    ],
+    "offers": []
+  }
+}

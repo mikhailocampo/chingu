@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gen:fixtures": "bun run scripts/gen-itinerary-fixtures.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

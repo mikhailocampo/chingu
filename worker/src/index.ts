@@ -15,7 +15,8 @@ import { assertDialable, NotAllowlisted } from "./allowlist";
 import { disrupt, reset } from "./dev-disrupt";
 import { replay, replayReset } from "./dev-replay";
 import { getRoster } from "./roster";
-import { placeCall, releaseCall } from "./dev-call";
+import { loadEmployeeItinerary, type Querier } from "./employee-detail";
+import { placeCall, releaseCall, type CallRequest } from "./dev-call";
 import { drainActions } from "./actions";
 import { decideApproval, TransitionError, type Decision } from "./transitions";
 
@@ -409,6 +410,36 @@ export default {
       return getRoster(env, eventId);
     }
 
+    // One traveller's itinerary — the read /api/roster deliberately does not do.
+    // Specified at PLAN-dashboard.md:124, built once the detail view became a
+    // real screen instead of a stub.
+    if (url.pathname.startsWith("/api/employee/") && req.method === "GET") {
+      const employeeId = decodeURIComponent(url.pathname.split("/")[3] ?? "");
+      const eventId = url.searchParams.get("event_id") ?? "evt-busan";
+      if (!employeeId) return new Response("employee id required", { status: 400 });
+
+      // The card comes from getRoster rather than a second hand-written query.
+      // It costs 26 rows to answer a question about one person, which is real
+      // but small, and it buys the guarantee that the detail screen and the
+      // roster can never disagree about someone's status or advisory — the
+      // failure that would actually hurt during a demo.
+      const rosterRes = await getRoster(env, eventId);
+      if (!rosterRes.ok) return rosterRes;
+      const roster = (await rosterRes.json()) as { cards: { employeeId: string }[] };
+      const card = roster.cards.find((c) => c.employeeId === employeeId);
+      if (!card) return new Response("not found", { status: 404 });
+
+      const query: Querier = async (sql, params) => {
+        const { results } = await env.DB.prepare(sql)
+          .bind(...params)
+          .all();
+        return (results ?? []) as Record<string, unknown>[];
+      };
+
+      const detail = await loadEmployeeItinerary(query, employeeId, eventId);
+      return Response.json({ card, ...detail });
+    }
+
     // Terminal write: execute pending work and close the impact out. Without
     // this nothing ever reaches RESOLVED and every booked card reads "Booking"
     // forever. Not dev-gated — this is the real executor seam, simulated in v1.
@@ -462,7 +493,7 @@ export default {
         return disrupt(env, new Date(), ctx, true);
       }
       if (url.pathname === "/api/dev/call" && req.method === "POST") {
-        return placeCall(env, await req.json().catch(() => ({})), new Date());
+        return placeCall(env, (await req.json().catch(() => ({}))) as CallRequest, new Date());
       }
       if (url.pathname === "/api/dev/call/release" && req.method === "POST") {
         const b = (await req.json().catch(() => ({}))) as { slot?: string };

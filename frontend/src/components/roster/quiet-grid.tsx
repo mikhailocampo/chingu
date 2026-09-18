@@ -31,11 +31,9 @@ const CAP = 50
 
 export function QuietGrid({
   cards,
-  onOpen,
   dimmed = false,
 }: {
   cards: RosterCard[]
-  onOpen: (card: RosterCard) => void
   dimmed?: boolean
 }) {
   if (cards.length === 0) return null
@@ -51,9 +49,11 @@ export function QuietGrid({
       >
         {shown.map((c) => (
           <li key={c.employeeId} className="bg-card">
-            <button
-              type="button"
-              onClick={() => onOpen(c)}
+            {/* An anchor, not a button: detail is a real route now, so
+                cmd-click and "open in new tab" should work the way they do
+                everywhere else. App.tsx intercepts the plain click. */}
+            <a
+              href={`/employee/${encodeURIComponent(c.employeeId)}`}
               className="hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring/40 flex w-full items-center gap-3 px-3.5 py-3 text-left outline-none focus-visible:ring-3 focus-visible:ring-inset sm:px-4"
             >
               <Avatar name={c.name} seed={c.employeeId} size={36} />
@@ -65,7 +65,7 @@ export function QuietGrid({
                   {c.homeBase ?? "—"}
                 </span>
               </span>
-            </button>
+            </a>
           </li>
         ))}
       </ul>

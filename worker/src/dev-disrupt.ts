@@ -367,6 +367,59 @@ export async function reset(env: Env): Promise<Response> {
   return Response.json({ ok: true, reset: EVENT_ID });
 }
 
+/**
+ * Queue one real outbound call and bind the slot BEFORE it rings.
+ *
+ * The binding is not bookkeeping: VocalBridge has no per-call context channel,
+ * so the agent learns who it called by resolving agent_slot server-side. Dial
+ * first and the agent greets nobody in particular.
+ */
+async function enqueueRealCall(
+  env: Env,
+  employeeId: string,
+  impactId: string,
+  phone: string,
+  now: Date,
+) {
+  const slot = "slot-a";
+  const dispatchId = `dsp-${impactId}-${slot}`;
+  const iso = now.toISOString();
+
+  await env.DB.batch([
+    env.DB.prepare(
+      `INSERT INTO dispatch
+         (id, kind, impact_id, employee_id, slot, directive, idempotency_key,
+          actor_kind, status, created_at)
+       VALUES (?, 'CALL_EMPLOYEE', ?, ?, ?, ?, ?, 'AGENT', 'QUEUED', ?)
+       ON CONFLICT(id) DO NOTHING`,
+    ).bind(
+      dispatchId,
+      impactId,
+      employeeId,
+      slot,
+      "Flight cancelled — read the priced options and capture a choice.",
+      `call:${impactId}:${slot}`,
+      iso,
+    ),
+    env.DB.prepare(
+      `UPDATE agent_slot SET status='BOUND', dispatch_id=?, bound_at=?, lease_expires_at=?
+        WHERE slot=?`,
+    ).bind(dispatchId, iso, new Date(now.getTime() + 30 * 60_000).toISOString(), slot),
+    env.DB.prepare(
+      `UPDATE disruption_impact
+          SET previous_state=state, state='CONTACTING', state_changed_at=?
+        WHERE id=? AND state='TRIAGING'`,
+    ).bind(iso, impactId),
+  ]);
+
+  await env.DISPATCH_Q.send({
+    dispatchId,
+    employeeId,
+    phone,
+    directive: "Flight cancelled — read the priced options.",
+  });
+}
+
 export function impactIdFor(employeeId: string): string {
   return `imp-${EVENT_ID}-${employeeId}`;
 }

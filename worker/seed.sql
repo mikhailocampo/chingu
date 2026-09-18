@@ -170,12 +170,13 @@ FROM employee
 WHERE org_id = 'org-samsung' AND id <> 'emp-us-10';
 
 INSERT OR REPLACE INTO segment
-  (id, itinerary_id, type, sabre_item_id, supplier_locator, property_id, chain_code,
-   property_phone, product_code, supplier_rate_code, payment_policy, num_guests,
+  (id, itinerary_id, type, sabre_item_id, supplier_locator, property_id, property_name,
+   chain_code, property_phone, product_code, supplier_rate_code, payment_policy, num_guests,
    lead_traveler_index, check_in, check_out, free_cancel_until, raw_status_code, status)
 SELECT 'seg-' || employee_id || '-h', id, 'HOTEL', '25',
        'PH' || upper(replace(substr(employee_id, 5), '-', '')),
-       '900000001', 'PH', '+82-51-990-1234', 'PHBUSDLX', 'CORP', 'GUARANTEE', 1,
+       '900000001', 'Park Hyatt Busan', 'PH', '+82-51-990-1234', 'PHBUSDLX', 'CORP',
+       'GUARANTEE', 1,
        1, '2026-09-15', '2026-09-18', '2026-09-11T15:00:00Z', 'HK', 'CONFIRMED'
 FROM itinerary WHERE component = 'HOTEL';
 

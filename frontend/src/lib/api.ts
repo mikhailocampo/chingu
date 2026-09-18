@@ -8,24 +8,28 @@
  *   ?fixtures=disrupted
  *   ?fixtures=off              force live even when the env flag is on
  */
+import { employeeDetailFixture } from "./employee-fixtures"
 import { fixtureFor, type FixtureScenario } from "./fixtures"
+import type { EmployeeDetail } from "./employee-types"
 import type { RosterResponse } from "./roster-types"
 
 export const EVENT_ID = "evt-busan"
 
-function urlFixture(): FixtureScenario | "off" | null {
-  if (typeof window === "undefined") return null
-  const v = new URLSearchParams(window.location.search).get("fixtures")
-  if (v === "off") return "off"
-  if (v === "calm" || v === "disrupted") return v
-  if (v !== null) return "calm"
-  return null
-}
-
+/**
+ * Fixtures are a BUILD-TIME choice, never a URL parameter.
+ *
+ * `?fixtures=calm` used to select them per-URL. That was cheap when the app was
+ * a single page — the URL was the whole state — and became an anti-pattern the
+ * moment detail got a route: the switch had to be threaded through every link,
+ * and a bare `/employee/emp-kr-14` fell back to live, hit a worker that was not
+ * running, and reported "Can't reach dispatch" when the real problem was a
+ * missing query parameter. A URL should address a traveller, not carry the
+ * demo's wiring.
+ *
+ * So the only switch left is the env flag. `/employee/:id` means that
+ * traveller, and where the bytes come from is the deployment's business.
+ */
 export function fixtureMode(): FixtureScenario | null {
-  const fromUrl = urlFixture()
-  if (fromUrl === "off") return null
-  if (fromUrl) return fromUrl
   return import.meta.env.VITE_USE_FIXTURES ? "calm" : null
 }
 
@@ -54,6 +58,28 @@ export async function fetchRoster(signal?: AbortSignal): Promise<RosterResponse>
   const res = await fetch(`/api/roster?event_id=${encodeURIComponent(EVENT_ID)}`, { signal })
   if (!res.ok) throw new Error(`roster ${res.status}`)
   return (await res.json()) as RosterResponse
+}
+
+/**
+ * One traveller's itinerary. Null means "no such traveller on this event",
+ * which the page renders as a not-found rather than an empty itinerary — the
+ * two look identical on screen and mean completely different things.
+ */
+export async function fetchEmployeeDetail(
+  employeeId: string,
+  signal?: AbortSignal
+): Promise<EmployeeDetail | null> {
+  if (fixtureMode()) {
+    await new Promise((r) => setTimeout(r, 180))
+    return employeeDetailFixture(employeeId, scenario)
+  }
+  const res = await fetch(
+    `/api/employee/${encodeURIComponent(employeeId)}?event_id=${encodeURIComponent(EVENT_ID)}`,
+    { signal }
+  )
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`employee ${res.status}`)
+  return (await res.json()) as EmployeeDetail
 }
 
 /** POST with no body — the dev seams and the approve path both look like this. */

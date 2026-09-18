@@ -12,7 +12,6 @@
 import { useMemo, useState } from "react"
 
 import { BandHeader } from "@/components/roster/band-header"
-import { DetailDrawer } from "@/components/roster/detail-drawer"
 import { MicDock } from "@/components/mic-dock"
 import { QuietGrid } from "@/components/roster/quiet-grid"
 import { RosterCardItem } from "@/components/roster/roster-card"
@@ -31,7 +30,6 @@ export function RosterPage() {
   const now = useTicker()
 
   const [filter, setFilter] = useState<RosterFilter>("all")
-  const [detail, setDetail] = useState<RosterCard | null>(null)
   const [approving, setApproving] = useState<string | null>(null)
 
   const visible = useMemo(() => applyFilter(data?.cards ?? [], filter), [data, filter])
@@ -83,7 +81,7 @@ export function RosterPage() {
             )}
           </span>
           <a
-            href="/admin"
+            href={"/admin"}
             className="hover:text-foreground underline underline-offset-4"
           >
             Admin
@@ -141,13 +139,12 @@ export function RosterPage() {
                 {band === "ON_TRACK" ? (
                   // Twenty people who are fine are a table. Cards have to earn
                   // their existence and "is fine" does not earn one.
-                  <QuietGrid cards={cards} onOpen={setDetail} dimmed={dimmed} />
+                  <QuietGrid cards={cards} dimmed={dimmed} />
                 ) : (
                   cards.map((c) => (
                     <RosterCardItem
                       key={c.employeeId}
                       card={c}
-                      onOpen={setDetail}
                       onApprove={handleApprove}
                       approving={approving === c.employeeId}
                       dimmed={dimmed}
@@ -178,8 +175,6 @@ export function RosterPage() {
           )}
         </>
       )}
-
-      <DetailDrawer card={detail} onOpenChange={(o) => !o && setDetail(null)} />
 
       <MicDock
         cards={data?.cards ?? []}

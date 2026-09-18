@@ -126,6 +126,7 @@ CREATE TABLE segment (
 
   -- hotel: every field modify-booking demands
   property_id           TEXT,
+  property_name         TEXT,                -- what a human is told on the phone
   chain_code            TEXT,
   property_phone        TEXT,                -- what the voice agent dials
   product_code          TEXT,

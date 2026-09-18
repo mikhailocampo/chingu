@@ -32,13 +32,11 @@ const FALLBACK: Partial<Record<Card["status"], string>> = {
 
 export function RosterCardItem({
   card,
-  onOpen,
   onApprove,
   approving = false,
   dimmed = false,
 }: {
   card: Card
-  onOpen: (card: Card) => void
   onApprove: (card: Card) => void
   approving?: boolean
   dimmed?: boolean
@@ -84,12 +82,7 @@ export function RosterCardItem({
           <MetaRow card={card} />
         </div>
 
-        <Actions
-          card={card}
-          approving={approving}
-          onOpen={onOpen}
-          onApprove={onApprove}
-        />
+        <Actions card={card} approving={approving} onApprove={onApprove} />
       </div>
     </article>
   )
@@ -132,18 +125,18 @@ function MetaRow({ card }: { card: Card }) {
 function Actions({
   card,
   approving,
-  onOpen,
   onApprove,
 }: {
   card: Card
   approving: boolean
-  onOpen: (c: Card) => void
   onApprove: (c: Card) => void
 }) {
+  const href = `/employee/${encodeURIComponent(card.employeeId)}`
+
   // Approve appears ONLY when the worker says the decision is unambiguous.
   // An open approval that is NOT one-click (Grace: no option is both in policy
-  // and on time) routes to the drawer instead — a judgement call must not be
-  // reachable by one tap.
+  // and on time) routes to the detail page instead — a judgement call must not
+  // be reachable by one tap.
   const canApprove = card.canApprove
   const needsReview = card.approvalId !== null && !canApprove
   const showReview = card.offerCount > 0 || needsReview
@@ -155,7 +148,7 @@ function Actions({
           // 44px minimum touch target. The mockup's 31px button fails and grew.
           <Button
             variant="outline"
-            onClick={() => onOpen(card)}
+            render={<a href={href} />}
             className="h-11 min-w-11 flex-1 rounded-[calc(var(--radius)*0.8)] text-[13.5px] sm:flex-none"
           >
             {needsReview ? "Review" : `Review ${card.offerCount}`}
@@ -173,21 +166,20 @@ function Actions({
         {!showReview && !canApprove && (
           <Button
             variant="ghost"
-            onClick={() => onOpen(card)}
+            render={<a href={href} />}
             className="text-muted-foreground h-11 min-w-11 flex-1 rounded-[calc(var(--radius)*0.8)] text-[13.5px] sm:flex-none"
           >
             Details
           </Button>
         )}
       </div>
-      <button
-        type="button"
-        aria-label={`Open ${card.name}'s detail`}
-        onClick={() => onOpen(card)}
+      <a
+        href={href}
+        aria-label={`Open ${card.name}'s itinerary`}
         className="text-muted-foreground hover:text-foreground focus-visible:ring-ring/40 grid size-11 shrink-0 place-items-center rounded-md outline-none focus-visible:ring-3"
       >
         <ChevronRight className="size-5" />
-      </button>
+      </a>
     </div>
   )
 }
